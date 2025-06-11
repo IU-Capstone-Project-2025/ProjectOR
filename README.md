@@ -6,3 +6,17 @@ This platform allows creators to post startup ideas, developers to explore and j
 - Almaz Andukov
 - Kirill Karsakov
 - Timur Nabiullin
+
+## How to launch
+Prerestiques: for launching this project locally docker must be installed and docker daemon launched. For launching it's needed to type this command:
+```bash
+docker compose up --build
+```
+Then open browser with this url: 
+```
+http://localhost:80
+```
+Additionally, backend documentation can be found here:
+```
+http://localhost:8000/docs
+```
