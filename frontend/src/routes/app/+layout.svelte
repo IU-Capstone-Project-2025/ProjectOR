@@ -28,21 +28,18 @@
 			</div>
 			<div class="ml-auto flex items-center gap-2">
 				<Button
-					href="/app/create-project"
 					variant="default"
 				>
 					<Plus />
 					Create Project
 				</Button>
 				<Button
-					href="/app/my-projects"
 					variant="outline"
 				>
 					<SquareChartGantt />
 					My Projects
 				</Button>
 				<Button
-					href="##"
 					variant="ghost"
 					size="icon"
 					class="ml-10"
