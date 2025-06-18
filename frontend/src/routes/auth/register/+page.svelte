@@ -3,6 +3,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
+	import { goto } from '$app/navigation';
 
 	const id = $props.id();
 
@@ -50,7 +51,8 @@
 							type="submit"
 							class="w-full"
 							disabled={!email || !password || password !== confirmPassword}
-							>Register
+							onclick={() => {goto("/app")}}
+						>Register
 						</Button>
 					</div>
 					<div class="text-center text-sm">

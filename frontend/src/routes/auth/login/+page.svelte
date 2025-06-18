@@ -3,6 +3,7 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
+	import { goto } from '$app/navigation';
 
 	const id = $props.id();
 
@@ -36,7 +37,13 @@
 							<Label for="password-{id}">Password</Label>
 							<Input bind:value={password} id="password-{id}" type="password" required />
 						</div>
-						<Button type="submit" class="w-full" disabled={!email || !password}>Login</Button>
+						<Button
+							type="submit"
+							class="w-full"
+							disabled={!email || !password}
+							onclick={() => {goto("/app")}}
+						>Login
+						</Button>
 					</div>
 					<div class="text-center text-sm">
 						Don&apos;t have an account?
