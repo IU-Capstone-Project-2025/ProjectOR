@@ -8,6 +8,8 @@ This platform allows creators to post startup ideas, developers to explore and j
 - Timur Nabiullin
 
 ## How to launch
+Before running, you need to create and fill variables `backend/app/.env` file. An example of such a file is located in `backend/app/.env.example`. 
+
 Prerestiques: for launching this project locally docker must be installed and docker daemon launched. For launching it's needed to type this command:
 ```bash
 docker compose up --build
