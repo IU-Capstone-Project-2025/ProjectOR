@@ -5,11 +5,15 @@ description = "ProjectOR Backend Application"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+<<<<<<< HEAD
     "alembic>=1.16.2",
     "asyncpg>=0.30.0",
     "black>=25.1.0",
     "fastapi>=0.115.12",
     "psycopg2>=2.9.10",
     "sqlalchemy>=2.0.41",
+=======
+    "fastapi>=0.115.12",
+>>>>>>> origin/main
     "uvicorn>=0.34.3",
 ]
