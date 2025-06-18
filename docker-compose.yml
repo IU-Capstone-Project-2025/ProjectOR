@@ -9,7 +9,22 @@ services:
       - ./backend/app:/app
     environment:
       - PYTHONPATH=/app
+    env_file:
+      - ./backend/app/.env
     restart: unless-stopped
+    depends_on:
+      - postgres
+      - migrate
+
+  migrate:
+    build:
+      context: ./backend/app
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/app/.env
+    depends_on:
+      - postgres
+    command: [ "uv", "run", "alembic", "upgrade", "head" ]
 
   frontend:
     build:
@@ -20,3 +35,13 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "projector"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
