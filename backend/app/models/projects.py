@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, String, Date, func, Boolean
 from dependencies.database import base
 
 
-
 class Project(base):
     __tablename__ = "projects"
 

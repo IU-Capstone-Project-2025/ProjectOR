@@ -24,7 +24,11 @@ class ProjectsDataClass:
     async def get_all_projects(self) -> list[ProjectSchema]:
         res = await self.db_session.execute(select(Project))
         projects = res.scalars().all()
-        return [ProjectSchema.model_validate(project) for project in projects] if projects else []
+        return (
+            [ProjectSchema.model_validate(project) for project in projects]
+            if projects
+            else []
+        )
 
     async def create_project(self, project_data: ProjectSchema) -> ProjectSchema:
         project = Project(**project_data.model_dump())

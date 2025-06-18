@@ -1,6 +1,6 @@
 from os import getenv
 
 DATABASE_URL = (
-    f"postgresql+asyncpg://{getenv('DB_USER')}:{getenv('DB_PASSWORD')}@"
-    f"{getenv('DB_HOST')}:{getenv('DB_PORT')}/{getenv('DB_NAME')}"
+    f"postgresql+asyncpg://{getenv('POSTGRES_USER')}:{getenv('POSTGRES_PASSWORD')}@"
+    f"{getenv('POSTGRES_HOST')}:{getenv('POSTGRES_PORT')}/{getenv('POSTGRES_DB')}"
 )

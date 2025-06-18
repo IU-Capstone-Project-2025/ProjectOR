@@ -39,9 +39,7 @@ services:
 
   postgres:
     image: postgres:13.3
-    environment:
-      POSTGRES_DB: "projector"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+    env_file:
+      - ./backend/app/.env
     ports:
       - "5432:5432"
