@@ -22,4 +22,4 @@ async def register(
     user_data: UserRegister,
     auth_service: AuthServiceDep,
 ) -> Token:
-    await auth_service.register(user_data)
+    return await auth_service.register(user_data)

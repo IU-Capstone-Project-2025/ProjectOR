@@ -29,7 +29,7 @@ class UserDataAccess:
                 "hashed_password": user.hashed_password,
             },
         )
-        self.db_session.commit()
+        await self.db_session.commit()
 
 
 UserDataAccessDep = Annotated[UserDataAccess, Depends(UserDataAccess)]

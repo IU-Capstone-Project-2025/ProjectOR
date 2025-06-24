@@ -9,12 +9,11 @@ from schemas.token import Token, TokenData
 from models.users import User
 from data_access.auth import UserDataAccessDep
 from schemas.user import UserRegister, UserInDB
-from random import choice
-from string import ascii_letters, digits
+from config import settings
 
-SECRET_KEY = "".join(choice(ascii_letters + digits) for _ in range(32))
+SECRET_KEY = settings.JWT_SECRET_KEY
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -52,7 +51,6 @@ class AuthService:
 
     async def login(self, form_data: OAuth2PasswordRequestForm) -> Token:
         user = await self.user_data_access.get_user_by_username(form_data.username)
-        print(user)
         if not user or not self._verify_password(
             form_data.password, user.hashed_password
         ):

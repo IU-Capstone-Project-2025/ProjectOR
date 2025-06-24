@@ -10,6 +10,7 @@ dependencies = [
     "black>=25.1.0",
     "fastapi>=0.115.12",
     "passlib[bcrypt]>=1.7.4",
+    "pydantic-settings>=2.10.1",
     "pyjwt>=2.10.1",
     "python-multipart>=0.0.20",
     "sqlalchemy>=2.0.41",
