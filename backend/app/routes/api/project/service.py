@@ -20,7 +20,13 @@ class ProjectService:
     async def get_projects(self) -> list[ProjectSchema]:
         return await self.data_access.get_all_projects()
 
-    async def create_project(self, project_data) -> ProjectSchema:
+    async def create_project(self, project_data: ProjectSchema) -> ProjectSchema:
+        project = await self.data_access.get_project_by_title(project_data.title)
+        if project:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Project with title '{project_data.title}' already exists.",
+            )
         return await self.data_access.create_project(project_data)
 
 
