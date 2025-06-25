@@ -1,5 +1,5 @@
 from typing import Annotated
-from pydantic_core._pydantic_core import ValidationError
+from pydantic import ValidationError
 from dependencies.database import DBSessionDep
 from sqlalchemy import select, insert
 from fastapi import Depends
