@@ -1,7 +1,16 @@
 <script lang="ts">
 	import projector_logo from '$lib/assets/projector_logo.jpg';
+	import { onMount } from 'svelte';
+	import { userState } from '@/api/user.svelte';
+	import { goto } from '$app/navigation';
 
 	let { children } = $props();
+
+	onMount(() => {
+		if (userState.user) {
+			goto('/app');
+		}
+	});
 </script>
 
 <div class="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">

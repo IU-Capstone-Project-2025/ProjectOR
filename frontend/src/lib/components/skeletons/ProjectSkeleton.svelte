@@ -3,7 +3,7 @@
 	import * as Card from '$lib/components/ui/card';
 </script>
 
-<Card.Root class="w-full max-w-md mx-auto p-6">
+<Card.Root class="mx-auto w-full max-w-md p-6">
 	<Card.Header>
 		<Card.Title class="text-xl">
 			<Skeleton />

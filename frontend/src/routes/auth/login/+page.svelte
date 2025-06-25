@@ -4,12 +4,29 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { goto } from '$app/navigation';
+	import { createMutation } from '@tanstack/svelte-query';
+	import { login } from './dataLoaders';
+	import { toast } from 'svelte-sonner';
+	import { LoaderCircle } from '@lucide/svelte';
+	import { userState } from '@/api/user.svelte';
 
 	const id = $props.id();
 
-	let { email, password } = $state({
-		email: '',
+	let { username, password } = $state({
+		username: '',
 		password: ''
+	});
+
+	const loginMutation = createMutation({
+		mutationFn: async () => await login(username, password),
+		onSuccess: (data) => {
+			toast.success('Login successful!');
+			userState.set_token(data.access_token);
+			goto('/app');
+		},
+		onError: (error: Error) => {
+			toast.error(`Login failed: ${error.message}`);
+		}
 	});
 </script>
 
@@ -24,12 +41,11 @@
 				<div class="grid gap-6">
 					<div class="grid gap-6">
 						<div class="grid gap-3">
-							<Label for="email-{id}">Email</Label>
+							<Label for="username-{id}">Username</Label>
 							<Input
-								bind:value={email}
-								id="email-{id}"
-								type="email"
-								placeholder="m@example.com"
+								bind:value={username}
+								id="username-{id}"
+								type="text"
 								required
 							/>
 						</div>
@@ -40,9 +56,15 @@
 						<Button
 							type="submit"
 							class="w-full"
-							disabled={!email || !password}
-							onclick={() => {goto("/app")}}
-						>Login
+							disabled={!username || !password || $loginMutation.isPending}
+							onclick={() => $loginMutation.mutate()}
+						>
+							{#if $loginMutation.isPending}
+								<LoaderCircle class="animate-spin" />
+								Loading...
+							{:else}
+								Login
+							{/if}
 						</Button>
 					</div>
 					<div class="text-center text-sm">

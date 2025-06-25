@@ -4,14 +4,31 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { goto } from '$app/navigation';
+	import { createMutation } from '@tanstack/svelte-query';
+	import { register } from './dataLoaders';
+	import { toast } from 'svelte-sonner';
+	import { LoaderCircle } from '@lucide/svelte';
+	import { userState } from '@/api/user.svelte';
 
 	const id = $props.id();
 
-	let { email, password, confirmPassword } = $state({
-		email: '',
+	let { username, password, confirmPassword } = $state({
+		username: '',
 		password: '',
 		confirmPassword: ''
 	});
+
+	const registerMutation = createMutation(({
+		mutationFn: async () => await register(username, password),
+		onSuccess: (data) => {
+			toast.success('Registration successful! Redirecting to login...');
+			userState.set_token(data.access_token);
+			goto('/app');
+		},
+		onError: (error: Error) => {
+			toast.error(`Registration failed: ${error.message}`);
+		}
+	}));
 </script>
 
 <div class="flex flex-col gap-6">
@@ -25,12 +42,11 @@
 				<div class="grid gap-6">
 					<div class="grid gap-6">
 						<div class="grid gap-3">
-							<Label for="email-{id}">Email</Label>
+							<Label for="username-{id}">Username</Label>
 							<Input
-								bind:value={email}
-								id="email-{id}"
-								type="email"
-								placeholder="m@example.com"
+								bind:value={username}
+								id="username-{id}"
+								type="text"
 								required
 							/>
 						</div>
@@ -50,9 +66,15 @@
 						<Button
 							type="submit"
 							class="w-full"
-							disabled={!email || !password || password !== confirmPassword}
-							onclick={() => {goto("/app")}}
-						>Register
+							disabled={!username || !password || password !== confirmPassword || $registerMutation.isPending}
+							onclick={() => $registerMutation.mutate()}
+						>
+							{#if $registerMutation.isPending}
+								<LoaderCircle class="animate-spin" />
+								Loading...
+							{:else}
+								Register
+							{/if}
 						</Button>
 					</div>
 					<div class="text-center text-sm">

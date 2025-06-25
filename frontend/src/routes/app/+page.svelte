@@ -1,10 +1,8 @@
 <script lang="ts">
-	import ProjectSkeleton from '$lib/components/skeletons/ProjectSkeleton.svelte';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
+	onMount(() => {
+		goto('/app/explore');
+	});
 </script>
-
-<div class="flex flex-row flex-wrap gap-6 p-4">
-	{#each Array(12) as _}
-		<ProjectSkeleton />
-	{/each}
-</div>
