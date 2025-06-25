@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from dependencies.auth import AuthUserDep
-from routes.api.project.schemas import ProjectSchema
+from routes.api.project.schemas import ProjectSchema, NewProjectSchema
 from routes.api.project.service import ProjectServiceDep
 
 router = APIRouter(prefix="/projects", tags=["projects"])
@@ -26,7 +26,7 @@ async def get_project_by_id(
 
 @router.post("/")
 async def create_project(
-    project_data: ProjectSchema,
+    project_data: NewProjectSchema,
     service: ProjectServiceDep,
     user: AuthUserDep,
 ) -> ProjectSchema:
