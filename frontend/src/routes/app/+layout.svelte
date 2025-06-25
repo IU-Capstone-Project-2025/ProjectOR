@@ -11,17 +11,20 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { API_BASE_URL } from '@/api/client';
 	import { Github, DoorClosed, Webhook, User, Settings } from '@lucide/svelte';
+	import CreateProjectDialog from './(components)/CreateProjectDialog.svelte';
 
 	const { children } = $props();
+
+	let isCreateProjectDialogOpen = $state(false);
 
 	onMount(() => {
 		if (!userState.user) {
 			goto('/auth/login');
 		}
 	});
-
 </script>
 
+<CreateProjectDialog bind:open={isCreateProjectDialogOpen} />
 <div
 	style="--sidebar-width: calc(var(--spacing) * 72); --header-height: calc(var(--spacing) * 12);"
 >
@@ -42,7 +45,7 @@
 				/>
 			</div>
 			<div class="ml-auto flex items-center gap-2">
-				<Button variant="default">
+				<Button variant="default" onclick={() => isCreateProjectDialogOpen = true}>
 					<Plus />
 					Create Project
 				</Button>
