@@ -1,7 +1,10 @@
 <script lang="ts">
 	import '../app.css';
+	import { QueryClientProvider } from '@tanstack/svelte-query';
 
-	let { children } = $props();
+	let { data, children } = $props();
 </script>
 
-{@render children()}
+<QueryClientProvider client={data.queryClient}>
+	{@render children()}
+</QueryClientProvider>

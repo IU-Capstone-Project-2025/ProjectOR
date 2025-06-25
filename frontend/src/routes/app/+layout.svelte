@@ -4,9 +4,22 @@
 	import CircleUserRound from '@lucide/svelte/icons/circle-user-round';
 	import Plus from '@lucide/svelte/icons/plus';
 	import SquareChartGantt from '@lucide/svelte/icons/square-chart-gantt';
-	import { Input } from '@/components/ui/input/index.js';
+	import { Input } from '@/components/ui/input';
+	import { onMount } from 'svelte';
+	import { userState } from '@/api/user.svelte.js';
+	import { goto } from '$app/navigation';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { API_BASE_URL } from '@/api/client';
+	import { Github, DoorClosed, Webhook, User, Settings } from '@lucide/svelte';
 
 	const { children } = $props();
+
+	onMount(() => {
+		if (!userState.user) {
+			goto('/auth/login');
+		}
+	});
+
 </script>
 
 <div
@@ -37,9 +50,47 @@
 					<SquareChartGantt />
 					My Projects
 				</Button>
-				<Button variant="ghost" size="icon" class="ml-10">
-					<CircleUserRound />
-				</Button>
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger>
+						{#snippet child({ props })}
+						<Button {...props} variant="ghost" size="icon" class="ml-10">
+							<CircleUserRound />
+						</Button>
+						{/snippet}
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content class="w-56" align="start">
+						<DropdownMenu.Label>{userState.user?.username}</DropdownMenu.Label>
+						<DropdownMenu.Separator />
+						<DropdownMenu.Group>
+							<DropdownMenu.Item>
+								<User />
+								Profile
+							</DropdownMenu.Item>
+							<DropdownMenu.Item>
+								<Settings />
+								Settings
+							</DropdownMenu.Item>
+						</DropdownMenu.Group>
+						<DropdownMenu.Separator />
+						<DropdownMenu.Item
+							onclick={() => window.open("https://github.com/IU-Capstone-Project-2025/ProjectOR", "_blank")}>
+							<Github />
+							GitHub
+						</DropdownMenu.Item>
+						<DropdownMenu.Item onclick={() => window.open(`${API_BASE_URL}docs`, "_blank")}>
+							<Webhook />
+							API
+						</DropdownMenu.Item>
+						<DropdownMenu.Separator />
+						<DropdownMenu.Item onclick={() => {
+							userState.logout();
+							goto('/auth/login');
+						}}>
+							<DoorClosed />
+							Log out
+						</DropdownMenu.Item>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
 			</div>
 		</div>
 	</header>
