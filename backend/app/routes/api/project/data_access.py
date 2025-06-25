@@ -21,6 +21,16 @@ class ProjectsDataClass:
         except ValidationError as e:
             return None
 
+    async def get_project_by_title(self, title: str) -> ProjectSchema | None:
+        res = await self.db_session.execute(
+            select(Project).where(Project.title == title)
+        )
+        project = res.scalars().first()
+        try:
+            return ProjectSchema.model_validate(project)
+        except ValidationError as e:
+            return None
+
     async def get_all_projects(self) -> list[ProjectSchema]:
         res = await self.db_session.execute(select(Project))
         projects = res.scalars().all()
