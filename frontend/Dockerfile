@@ -1,4 +1,4 @@
-FROM node:20-alpine AS build
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
@@ -18,17 +18,19 @@ COPY . .
 # Build the application
 RUN pnpm build
 
-# Production stage
-FROM nginx:stable-alpine AS production
+ENTRYPOINT ["pnpm", "preview", "--host", "0.0.0.0", "--port", "80"]
 
-# Copy built assets from build stage
-COPY --from=build /app/build/ /usr/share/nginx/html
-
-# Copy nginx config
-RUN rm -rf /etc/nginx/conf.d
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+## Production stage
+#FROM nginx:stable-alpine AS production
+#
+## Copy built assets from build stage
+#COPY --from=build /app/build/ /usr/share/nginx/html
+#
+## Copy nginx config
+#RUN rm -rf /etc/nginx/conf.d
+#COPY nginx.conf /etc/nginx/conf.d/default.conf
+#
+## Expose port
+#EXPOSE 80
+#
+#CMD ["nginx", "-g", "daemon off;"]
