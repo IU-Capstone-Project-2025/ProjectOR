@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi.exceptions import HTTPException
 from routes.api.project.data_access import ProjectsDataAccessDep
-from routes.api.project.schemas import ProjectSchema
+from routes.api.project.schemas import ProjectSchema, NewProjectSchema
 
 
 class ProjectService:
@@ -20,7 +20,7 @@ class ProjectService:
     async def get_projects(self) -> list[ProjectSchema]:
         return await self.data_access.get_all_projects()
 
-    async def create_project(self, project_data: ProjectSchema) -> ProjectSchema:
+    async def create_project(self, project_data: NewProjectSchema) -> ProjectSchema:
         project = await self.data_access.get_project_by_title(project_data.title)
         if project:
             raise HTTPException(
