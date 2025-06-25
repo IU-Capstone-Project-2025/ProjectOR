@@ -51,8 +51,10 @@
 							type="submit"
 							class="w-full"
 							disabled={!email || !password || password !== confirmPassword}
-							onclick={() => {goto("/app")}}
-						>Register
+							onclick={() => {
+								goto('/app');
+							}}
+							>Register
 						</Button>
 					</div>
 					<div class="text-center text-sm">

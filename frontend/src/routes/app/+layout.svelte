@@ -9,16 +9,18 @@
 	const { children } = $props();
 </script>
 
-<div style="--sidebar-width: calc(var(--spacing) * 72); --header-height: calc(var(--spacing) * 12);">
+<div
+	style="--sidebar-width: calc(var(--spacing) * 72); --header-height: calc(var(--spacing) * 12);"
+>
 	<header
-		class="h-(--header-height) group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) flex shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear"
+		class="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)"
 	>
-		<div class="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6 justify-between">
+		<div class="flex w-full items-center justify-between gap-1 px-4 lg:gap-2 lg:px-6">
 			<div class="flex items-center gap-2">
 				<img src={projector_logo} alt="ProjectOR Logo" class="h-8 w-8 rounded-full" />
 				<h1 class="text-base font-medium">Explore Projects</h1>
 			</div>
-			<div class="items-center ml-auto w-full max-w-xs lg:max-w-sm">
+			<div class="ml-auto w-full max-w-xs items-center lg:max-w-sm">
 				<Input
 					type="search"
 					placeholder="Search projects..."
@@ -27,23 +29,15 @@
 				/>
 			</div>
 			<div class="ml-auto flex items-center gap-2">
-				<Button
-					variant="default"
-				>
+				<Button variant="default">
 					<Plus />
 					Create Project
 				</Button>
-				<Button
-					variant="outline"
-				>
+				<Button variant="outline">
 					<SquareChartGantt />
 					My Projects
 				</Button>
-				<Button
-					variant="ghost"
-					size="icon"
-					class="ml-10"
-				>
+				<Button variant="ghost" size="icon" class="ml-10">
 					<CircleUserRound />
 				</Button>
 			</div>
