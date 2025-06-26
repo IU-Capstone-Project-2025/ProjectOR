@@ -65,7 +65,7 @@
 						<DropdownMenu.Label>{userState.user?.username}</DropdownMenu.Label>
 						<DropdownMenu.Separator />
 						<DropdownMenu.Group>
-							<DropdownMenu.Item>
+							<DropdownMenu.Item onclick={() => goto('/app/profile')}>
 								<User />
 								Profile
 							</DropdownMenu.Item>
