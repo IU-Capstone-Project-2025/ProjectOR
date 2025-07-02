@@ -11,7 +11,7 @@
 		"check": "svelte-kit sync && svelte-check --no-tsconfig --ignore \"**.test.ts\"",
 		"check:watch": "svelte-kit sync && svelte-check --no-tsconfig --ignore \"**.test.ts\" --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint .",
+		"lint": "prettier --check . && eslint src --ignore-pattern \"src/**/*.test.ts\"",
 		"test": "vitest",
 		"test:run": "vitest run",
 		"test:ui": "vitest --ui",

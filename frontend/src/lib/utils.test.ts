@@ -16,7 +16,9 @@ describe('utils', () => {
 		});
 
 		it('should handle arrays and objects', () => {
-			expect(cn(['px-2', 'py-1'], { 'text-red-500': true, 'bg-blue-500': false })).toBe('px-2 py-1 text-red-500');
+			expect(cn(['px-2', 'py-1'], { 'text-red-500': true, 'bg-blue-500': false })).toBe(
+				'px-2 py-1 text-red-500'
+			);
 		});
 	});
 

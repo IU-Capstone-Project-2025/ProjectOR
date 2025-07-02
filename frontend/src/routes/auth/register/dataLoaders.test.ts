@@ -64,9 +64,7 @@ describe('Register Data Loaders', () => {
 				error: mockError
 			});
 
-			await expect(register('newuser', 'password123')).rejects.toThrow(
-				'Registration failed'
-			);
+			await expect(register('newuser', 'password123')).rejects.toThrow('Registration failed');
 		});
 
 		it('should handle empty username and password', async () => {
@@ -79,9 +77,7 @@ describe('Register Data Loaders', () => {
 				error: mockError
 			});
 
-			await expect(register('', '')).rejects.toThrow(
-				JSON.stringify(mockError.detail)
-			);
+			await expect(register('', '')).rejects.toThrow(JSON.stringify(mockError.detail));
 		});
 
 		it('should handle special characters in credentials', async () => {

@@ -9,7 +9,6 @@ interface JWTPayload {
 	sub: string; // The subject of the JWT, typically username
 }
 
-
 class UserState {
 	user: UserSvelte | null = $state(null);
 	token: string | null = $state(null);

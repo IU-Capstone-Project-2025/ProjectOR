@@ -18,7 +18,7 @@
 		confirmPassword: ''
 	});
 
-	const registerMutation = createMutation(({
+	const registerMutation = createMutation({
 		mutationFn: async () => await register(username, password),
 		onSuccess: (data) => {
 			toast.success('Registration successful! Redirecting to login...');
@@ -28,7 +28,7 @@
 		onError: (error: Error) => {
 			toast.error(`Registration failed: ${error.message}`);
 		}
-	}));
+	});
 </script>
 
 <div class="flex flex-col gap-6">
@@ -43,12 +43,7 @@
 					<div class="grid gap-6">
 						<div class="grid gap-3">
 							<Label for="username-{id}">Username</Label>
-							<Input
-								bind:value={username}
-								id="username-{id}"
-								type="text"
-								required
-							/>
+							<Input bind:value={username} id="username-{id}" type="text" required />
 						</div>
 						<div class="grid gap-3">
 							<Label for="password-{id}">Password</Label>
@@ -66,7 +61,10 @@
 						<Button
 							type="submit"
 							class="w-full"
-							disabled={!username || !password || password !== confirmPassword || $registerMutation.isPending}
+							disabled={!username ||
+								!password ||
+								password !== confirmPassword ||
+								$registerMutation.isPending}
 							onclick={() => $registerMutation.mutate()}
 						>
 							{#if $registerMutation.isPending}

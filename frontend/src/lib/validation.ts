@@ -12,7 +12,7 @@ export interface ValidationResult {
  */
 export function validateEmail(email: string): ValidationResult {
 	const errors: string[] = [];
-	
+
 	if (!email || email.trim() === '') {
 		errors.push('Email is required');
 	} else {
@@ -33,7 +33,7 @@ export function validateEmail(email: string): ValidationResult {
  */
 export function validatePassword(password: string): ValidationResult {
 	const errors: string[] = [];
-	
+
 	if (!password) {
 		errors.push('Password is required');
 	} else {
@@ -62,7 +62,7 @@ export function validatePassword(password: string): ValidationResult {
  */
 export function validateUsername(username: string): ValidationResult {
 	const errors: string[] = [];
-	
+
 	if (!username || username.trim() === '') {
 		errors.push('Username is required');
 	} else {
@@ -88,7 +88,7 @@ export function validateUsername(username: string): ValidationResult {
  */
 export function validateProjectTitle(title: string): ValidationResult {
 	const errors: string[] = [];
-	
+
 	if (!title || title.trim() === '') {
 		errors.push('Project title is required');
 	} else {
@@ -111,7 +111,7 @@ export function validateProjectTitle(title: string): ValidationResult {
  */
 export function validateProjectDescription(description: string): ValidationResult {
 	const errors: string[] = [];
-	
+
 	// Description is optional, but if provided, should have some constraints
 	if (description && description.length > 1000) {
 		errors.push('Project description must be less than 1000 characters long');

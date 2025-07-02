@@ -8,7 +8,7 @@ vi.mock('openapi-fetch', () => ({
 		GET: vi.fn(),
 		POST: vi.fn(),
 		PUT: vi.fn(),
-		DELETE: vi.fn(),
+		DELETE: vi.fn()
 	}))
 }));
 
