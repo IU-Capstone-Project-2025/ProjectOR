@@ -33,15 +33,8 @@ def sample_projects():
     ]
 
 
-@pytest.fixture
-def sample_project():
-    return ProjectSchema(
-        id=1, title="Sample Project", description="Sample Description", is_public=True
-    )
-
-
 @pytest.mark.asyncio
-async def test_get_projects_success(mock_service, sample_projects):
+async def test_get_projects_success(mock_service, sample_projects, mock_user):
     mock_service.get_projects.return_value = sample_projects
 
     response = await get_projects(mock_service, mock_user)

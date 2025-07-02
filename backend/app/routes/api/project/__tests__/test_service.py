@@ -1,15 +1,9 @@
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 import pytest
 from fastapi import HTTPException
 from routes.api.project.service import ProjectService
 from routes.api.project.schemas import ProjectSchema
 from schemas.user import User
-
-
-@pytest.fixture
-def mock_service():
-    service = AsyncMock()
-    return service
 
 
 @pytest.fixture
