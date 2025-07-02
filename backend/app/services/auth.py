@@ -6,7 +6,7 @@ from jwt import encode, decode
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from schemas.token import Token, TokenData
-from models.users import User
+from models.users import User, UserRole
 from data_access.auth import UserDataAccessDep
 from schemas.user import UserRegister, UserInDB
 from config import settings
@@ -82,6 +82,7 @@ class AuthService:
         user_in_db = UserInDB(
             username=user_data.username,
             hashed_password=hashed_password,
+            role=UserRole.VIEWER,
         )
         await self.user_data_access.create_user(user_in_db)
 

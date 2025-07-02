@@ -23,11 +23,7 @@ class UserDataAccess:
 
     async def create_user(self, user: UserInDB):
         await self.db_session.execute(
-            insert(User),
-            {
-                "username": user.username,
-                "hashed_password": user.hashed_password,
-            },
+            insert(User), user.model_dump(exclude_unset=True, by_alias=True)
         )
         await self.db_session.commit()
 
