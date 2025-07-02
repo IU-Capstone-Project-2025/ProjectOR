@@ -2,8 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from schemas.token import Token
-from schemas.user import User as UserSchema, UserRegister
-from dependencies.auth import AuthUserDep
+from schemas.user import UserRegister
 from services.auth import AuthServiceDep
 
 router = APIRouter(prefix="/auth", tags=["auth"])
