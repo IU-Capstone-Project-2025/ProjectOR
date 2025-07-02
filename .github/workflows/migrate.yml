@@ -15,5 +15,5 @@ jobs:
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
           service-id: ${{ secrets.MIGRATE_PROD_SERVICE_ID }}
-          api-key: ${{ secrets.MIGRATE_PROD_API_KEY }}
+          api-key: ${{ secrets.BACKEND_PROD_API_KEY }}
           wait-for-success: true
