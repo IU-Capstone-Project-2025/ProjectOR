@@ -1,7 +1,7 @@
-name: Backend develop
+name: Bakend prod
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
     paths:
       - backend/**
@@ -13,12 +13,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
       - name: Change directory to backend/app
         run: |
           cd backend/app
@@ -32,10 +30,9 @@ jobs:
       - name: Run tests
         run: |
           uv run pytest --maxfail=1 --disable-warnings -v
-      - name: Deploy to develop
-        if: success()
+      - name: Deploy to production
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
-          service-id: ${{ secrets.BACKEND_DEVELOP_SERVICE_ID }}
+          service-id: ${{ secrets.BACKEND_PROD_SERVICE_ID }}
           api-key: ${{ secrets.BACKEND_PROD_API_KEY }}
           wait-for-success: true
