@@ -14,7 +14,7 @@ Prerestiques: for launching this project locally docker must be installed and do
 ```bash
 docker compose up --build
 ```
-Then open browser with this url: 
+Then open browser with this url:
 ```
 http://localhost:80
 ```
