@@ -13,12 +13,10 @@
 		</Card.Title>
 	</Card.Header>
 
-	<Card.Content class="flex flex-col gap-4 text-sm h-32">
-		<p class="truncate text-wrap text-balance">{project.description}</p>
+	<Card.Content class="flex h-32 flex-col gap-4 text-sm">
+		<p class="truncate text-balance text-wrap">{project.description}</p>
 	</Card.Content>
 	<Card.Footer class="flex justify-end">
-		<Button variant="default">
-			View Project
-		</Button>
+		<Button variant="default">View Project</Button>
 	</Card.Footer>
 </Card.Root>

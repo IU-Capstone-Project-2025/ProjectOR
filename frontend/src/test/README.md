@@ -36,21 +36,25 @@ src/
 ## Running Tests
 
 ### All tests
+
 ```bash
 pnpm test
 ```
 
 ### Run tests once
+
 ```bash
 pnpm test:run
 ```
 
 ### Visual test UI
+
 ```bash
 pnpm test:ui
 ```
 
 ### With coverage
+
 ```bash
 pnpm test:coverage
 ```
@@ -67,7 +71,7 @@ import YourComponent from './YourComponent.svelte';
 describe('YourComponent', () => {
 	it('should render correctly', () => {
 		render(YourComponent, { props: { prop1: 'value' } });
-		
+
 		expect(screen.getByText('Expected Text')).toBeInTheDocument();
 	});
 });

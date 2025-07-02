@@ -9,8 +9,5 @@
 <Alert.Root variant="destructive">
 	<CircleAlertIcon class="size-4" />
 	<Alert.Title>Error</Alert.Title>
-	<Alert.Description
-	>{trim(text, '"')}
-	</Alert.Description
-	>
+	<Alert.Description>{trim(text, '"')}</Alert.Description>
 </Alert.Root>

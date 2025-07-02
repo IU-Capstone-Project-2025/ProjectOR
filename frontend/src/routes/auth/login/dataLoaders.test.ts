@@ -49,7 +49,7 @@ describe('Auth Data Loaders', () => {
 			};
 
 			let capturedFormData: FormData | null = null;
-			
+
 			vi.mocked(client.POST).mockImplementationOnce(async (url, options) => {
 				if (options?.bodySerializer) {
 					const body = {
@@ -97,9 +97,7 @@ describe('Auth Data Loaders', () => {
 				error: mockError
 			});
 
-			await expect(login('', '')).rejects.toThrow(
-				JSON.stringify(mockError.detail)
-			);
+			await expect(login('', '')).rejects.toThrow(JSON.stringify(mockError.detail));
 		});
 
 		it('should handle special characters in credentials', async () => {

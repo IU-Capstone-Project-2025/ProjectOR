@@ -17,7 +17,7 @@ describe('Validation utilities', () => {
 				'123@numbers.com'
 			];
 
-			validEmails.forEach(email => {
+			validEmails.forEach((email) => {
 				const result = validateEmail(email);
 				expect(result.isValid).toBe(true);
 				expect(result.errors).toHaveLength(0);
@@ -33,7 +33,7 @@ describe('Validation utilities', () => {
 				'user@@domain.com'
 			];
 
-			invalidEmails.forEach(email => {
+			invalidEmails.forEach((email) => {
 				const result = validateEmail(email);
 				expect(result.isValid).toBe(false);
 				expect(result.errors).toContain('Invalid email format');
@@ -49,14 +49,9 @@ describe('Validation utilities', () => {
 
 	describe('validatePassword', () => {
 		it('should validate strong passwords', () => {
-			const strongPasswords = [
-				'Password123',
-				'MyStr0ngP@ss',
-				'SecurePass1',
-				'C0mpl3xP@ssw0rd'
-			];
+			const strongPasswords = ['Password123', 'MyStr0ngP@ss', 'SecurePass1', 'C0mpl3xP@ssw0rd'];
 
-			strongPasswords.forEach(password => {
+			strongPasswords.forEach((password) => {
 				const result = validatePassword(password);
 				expect(result.isValid).toBe(true);
 				expect(result.errors).toHaveLength(0);
@@ -96,15 +91,9 @@ describe('Validation utilities', () => {
 
 	describe('validateUsername', () => {
 		it('should validate correct usernames', () => {
-			const validUsernames = [
-				'user123',
-				'test_user',
-				'user.name',
-				'user@domain.com',
-				'user-name'
-			];
+			const validUsernames = ['user123', 'test_user', 'user.name', 'user@domain.com', 'user-name'];
 
-			validUsernames.forEach(username => {
+			validUsernames.forEach((username) => {
 				const result = validateUsername(username);
 				expect(result.isValid).toBe(true);
 				expect(result.errors).toHaveLength(0);
@@ -114,7 +103,9 @@ describe('Validation utilities', () => {
 		it('should reject usernames with invalid characters', () => {
 			const result = validateUsername('user name'); // space not allowed
 			expect(result.isValid).toBe(false);
-			expect(result.errors).toContain('Username can only contain letters, numbers, and the characters: _ @ . -');
+			expect(result.errors).toContain(
+				'Username can only contain letters, numbers, and the characters: _ @ . -'
+			);
 		});
 
 		it('should reject short usernames', () => {
@@ -139,13 +130,9 @@ describe('Validation utilities', () => {
 
 	describe('validateProjectTitle', () => {
 		it('should validate correct project titles', () => {
-			const validTitles = [
-				'My Project',
-				'Project 123',
-				'A Valid Project Title'
-			];
+			const validTitles = ['My Project', 'Project 123', 'A Valid Project Title'];
 
-			validTitles.forEach(title => {
+			validTitles.forEach((title) => {
 				const result = validateProjectTitle(title);
 				expect(result.isValid).toBe(true);
 				expect(result.errors).toHaveLength(0);
@@ -186,7 +173,7 @@ describe('Validation utilities', () => {
 				'A longer description with more details about the project'
 			];
 
-			validDescriptions.forEach(description => {
+			validDescriptions.forEach((description) => {
 				const result = validateProjectDescription(description);
 				expect(result.isValid).toBe(true);
 				expect(result.errors).toHaveLength(0);
