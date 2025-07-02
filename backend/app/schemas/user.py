@@ -1,11 +1,10 @@
-from typing import Optional
 from models.users import UserRole
 from pydantic import BaseModel
 
 
 class User(BaseModel):
     username: str
-    role: Optional[UserRole]
+    role: UserRole
 
 
 class UserRegister(BaseModel):
