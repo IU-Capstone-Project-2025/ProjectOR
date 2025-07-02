@@ -1,4 +1,4 @@
-name: Bakend prod
+name: Baсkend prod
 
 on:
   push:
@@ -17,19 +17,19 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - name: Change directory to backend/app
-        run: |
-          cd backend/app
       - name: Install uv package manager
         run: |
           python -m pip install --upgrade pip
           pip install uv
+        working-directory: backend/app
       - name: Install dependencies with uv
         run: |
           uv sync --locked --no-dev
+        working-directory: backend/app
       - name: Run tests
         run: |
           uv run pytest --maxfail=1 --disable-warnings -v
+        working-directory: backend/app
       - name: Deploy to production
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:

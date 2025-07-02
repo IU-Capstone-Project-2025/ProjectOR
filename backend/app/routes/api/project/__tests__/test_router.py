@@ -17,7 +17,6 @@ def mock_user():
     user = MagicMock()
     user.username = "testuser"
     user.role = "VIEWER"
-
     return user
 
 
