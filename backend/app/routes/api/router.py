@@ -6,11 +6,10 @@ from routes.api.user import router as user_router
 
 router = APIRouter(tags=["API"], prefix="/api")
 
-routers = [
+for r in [
     health_check_router,
     project_router,
     auth_router,
     user_router,
-]
-for r in routers:
+]:
     router.include_router(r)

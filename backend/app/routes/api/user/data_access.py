@@ -16,7 +16,7 @@ class UserDataAccess:
         )
         return res.scalars().first()
 
-    async def set_user_role(self, username: str, role: str) -> None:
+    async def set_user_role(self, username: str, role: UserRole) -> None:
         await self.db_session.execute(
             update(User).where(User.username == username).values(role=role)
         )

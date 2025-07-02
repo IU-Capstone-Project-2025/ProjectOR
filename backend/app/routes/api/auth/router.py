@@ -8,7 +8,7 @@ from services.auth import AuthServiceDep
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     auth_service: AuthServiceDep,
@@ -16,7 +16,7 @@ async def login_for_access_token(
     return await auth_service.login(form_data)
 
 
-@router.post("/register", response_model=Token)
+@router.post("/register")
 async def register(
     user_data: UserRegister,
     auth_service: AuthServiceDep,
