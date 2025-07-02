@@ -23,11 +23,6 @@ class UserService:
                 status_code=400,
                 detail="You cannot set the same role as your own.",
             )
-        if user_role.role not in UserRole.__members__:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Role '{user_role.role}' is not a valid user role.",
-            )
         await self.user_repository.set_user_role(user.username, user_role.role)
 
 
