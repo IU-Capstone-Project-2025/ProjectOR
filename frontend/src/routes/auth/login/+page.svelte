@@ -42,12 +42,7 @@
 					<div class="grid gap-6">
 						<div class="grid gap-3">
 							<Label for="username-{id}">Username</Label>
-							<Input
-								bind:value={username}
-								id="username-{id}"
-								type="text"
-								required
-							/>
+							<Input bind:value={username} id="username-{id}" type="text" required />
 						</div>
 						<div class="grid gap-3">
 							<Label for="password-{id}">Password</Label>

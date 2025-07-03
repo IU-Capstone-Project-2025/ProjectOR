@@ -18,10 +18,8 @@
 	const queryClient = useQueryClient();
 
 	const createProjectMutation = createMutation({
-		mutationFn: async ({ title, description }: {
-			title: string;
-			description: string
-		}) => await createProject(title, description),
+		mutationFn: async ({ title, description }: { title: string; description: string }) =>
+			await createProject(title, description),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['projects'] });
 			toast.success('Project created successfully');
@@ -33,16 +31,13 @@
 			toast.error(`Failed to create project: ${error.message}`);
 		}
 	});
-
 </script>
 
 <Dialog.Root bind:open>
 	<Dialog.Content class="sm:max-w-2xl">
 		<Dialog.Header>
 			<Dialog.Title>Create Project</Dialog.Title>
-			<Dialog.Description>
-				Fill in the details below to create a new project.
-			</Dialog.Description>
+			<Dialog.Description>Fill in the details below to create a new project.</Dialog.Description>
 		</Dialog.Header>
 		<div class="grid gap-4 py-4">
 			<div class="grid grid-cols-4 items-center gap-4">
@@ -63,7 +58,8 @@
 			<Button
 				type="submit"
 				disabled={!name || !description || $createProjectMutation.isPending}
-				onclick={()=>$createProjectMutation.mutate({title: name, description})}>
+				onclick={() => $createProjectMutation.mutate({ title: name, description })}
+			>
 				{#if $createProjectMutation.isPending}
 					<LoaderCircle class="animate-spin" />
 					Loading...

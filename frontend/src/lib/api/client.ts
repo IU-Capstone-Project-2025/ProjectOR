@@ -17,5 +17,4 @@ export const client = createClient<paths>({
 	baseUrl: API_BASE_URL
 });
 
-
 client.use(authWithHeadersMiddleware);

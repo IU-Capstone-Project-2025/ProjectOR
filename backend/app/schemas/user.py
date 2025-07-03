@@ -1,8 +1,10 @@
+from models.users import UserRole
 from pydantic import BaseModel
 
 
 class User(BaseModel):
     username: str
+    role: UserRole
 
 
 class UserRegister(BaseModel):

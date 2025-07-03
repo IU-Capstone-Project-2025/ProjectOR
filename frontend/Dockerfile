@@ -1,5 +1,8 @@
 FROM node:20-alpine
 
+# Set env variables
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 # Set working directory
 WORKDIR /app
 

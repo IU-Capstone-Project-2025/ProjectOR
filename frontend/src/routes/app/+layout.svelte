@@ -45,7 +45,7 @@
 				/>
 			</div>
 			<div class="ml-auto flex items-center gap-2">
-				<Button variant="default" onclick={() => isCreateProjectDialogOpen = true}>
+				<Button variant="default" onclick={() => (isCreateProjectDialogOpen = true)}>
 					<Plus />
 					Create Project
 				</Button>
@@ -56,9 +56,9 @@
 				<DropdownMenu.Root>
 					<DropdownMenu.Trigger>
 						{#snippet child({ props })}
-						<Button {...props} variant="ghost" size="icon" class="ml-10">
-							<CircleUserRound />
-						</Button>
+							<Button {...props} variant="ghost" size="icon" class="ml-10">
+								<CircleUserRound />
+							</Button>
 						{/snippet}
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content class="w-56" align="start">
@@ -76,19 +76,23 @@
 						</DropdownMenu.Group>
 						<DropdownMenu.Separator />
 						<DropdownMenu.Item
-							onclick={() => window.open("https://github.com/IU-Capstone-Project-2025/ProjectOR", "_blank")}>
+							onclick={() =>
+								window.open('https://github.com/IU-Capstone-Project-2025/ProjectOR', '_blank')}
+						>
 							<Github />
 							GitHub
 						</DropdownMenu.Item>
-						<DropdownMenu.Item onclick={() => window.open(`${API_BASE_URL}docs`, "_blank")}>
+						<DropdownMenu.Item onclick={() => window.open(`${API_BASE_URL}docs`, '_blank')}>
 							<Webhook />
 							API
 						</DropdownMenu.Item>
 						<DropdownMenu.Separator />
-						<DropdownMenu.Item onclick={() => {
-							userState.logout();
-							goto('/auth/login');
-						}}>
+						<DropdownMenu.Item
+							onclick={() => {
+								userState.logout();
+								goto('/auth/login');
+							}}
+						>
 							<DoorClosed />
 							Log out
 						</DropdownMenu.Item>
