@@ -8,13 +8,13 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
 	import { userState } from '@/api/user.svelte';
-	import { 
-		User, 
-		Mail, 
-		Calendar, 
-		Settings, 
-		Edit3, 
-		Save, 
+	import {
+		User,
+		Mail,
+		Calendar,
+		Settings,
+		Edit3,
+		Save,
 		X,
 		Camera,
 		Key,
@@ -26,7 +26,7 @@
 	let isEditing = $state(false);
 	let editedProfile = $state({
 		username: userState.user?.username || '',
-		email: userState.user?.email || '',
+		email: "",
 		bio: '',
 		location: '',
 		website: ''
@@ -36,7 +36,7 @@
 		isEditing = true;
 		editedProfile = {
 			username: userState.user?.username || '',
-			email: userState.user?.email || '',
+			email: "",
 			bio: '',
 			location: '',
 			website: ''
@@ -53,7 +53,7 @@
 		isEditing = false;
 		editedProfile = {
 			username: userState.user?.username || '',
-			email: userState.user?.email || '',
+			email: '',
 			bio: '',
 			location: '',
 			website: ''
@@ -69,60 +69,60 @@
 	}
 </script>
 
-<div class="container mx-auto px-4 py-6 max-w-4xl space-y-6">
+<div class="container mx-auto max-w-4xl space-y-6 px-4 py-6">
 	<!-- Header -->
-	<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+	<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 		<div>
 			<h1 class="text-3xl font-bold tracking-tight">Profile</h1>
 			<p class="text-muted-foreground mt-1">Manage your account settings and preferences</p>
 		</div>
 		{#if !isEditing}
 			<Button onclick={handleEdit}>
-				<Edit3 class="h-4 w-4 mr-2" />
+				<Edit3 class="mr-2 h-4 w-4" />
 				Edit Profile
 			</Button>
 		{/if}
 	</div>
 
-	<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+	<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 		<!-- Profile Card -->
 		<div class="lg:col-span-1">
 			<Card.Root>
 				<Card.Content class="p-6 text-center">
 					<div class="relative mb-4">
-						<Avatar.Root class="h-24 w-24 mx-auto">
-							<Avatar.Image 
-								src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face" 
-								alt="Profile" 
+						<Avatar.Root class="mx-auto h-24 w-24">
+							<Avatar.Image
+								src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face"
+								alt="Profile"
 							/>
 							<Avatar.Fallback class="text-lg">
 								{userState.user?.username?.[0]?.toUpperCase() || 'U'}
 							</Avatar.Fallback>
 						</Avatar.Root>
 						{#if isEditing}
-							<Button 
-								size="sm" 
-								variant="outline" 
-								class="absolute -bottom-2 -right-2 h-8 w-8 rounded-full p-0"
+							<Button
+								size="sm"
+								variant="outline"
+								class="absolute -right-2 -bottom-2 h-8 w-8 rounded-full p-0"
 							>
 								<Camera class="h-4 w-4" />
 							</Button>
 						{/if}
 					</div>
 
-					<h2 class="text-xl font-semibold mb-1">
+					<h2 class="mb-1 text-xl font-semibold">
 						{userState.user?.username || 'Username'}
 					</h2>
-					<p class="text-sm text-muted-foreground mb-4">
+					<p class="text-muted-foreground mb-4 text-sm">
 						{editedProfile.email || 'email@example.com'}
 					</p>
 
 					<Badge variant="secondary" class="mb-4">
-						<Shield class="h-3 w-3 mr-1" />
+						<Shield class="mr-1 h-3 w-3" />
 						Active User
 					</Badge>
 
-					<div class="text-xs text-muted-foreground flex items-center justify-center gap-1">
+					<div class="text-muted-foreground flex items-center justify-center gap-1 text-xs">
 						<Calendar class="h-3 w-3" />
 						<span>Joined {formatDate(new Date())}</span>
 					</div>
@@ -152,7 +152,7 @@
 		</div>
 
 		<!-- Main Content -->
-		<div class="lg:col-span-2 space-y-6">
+		<div class="space-y-6 lg:col-span-2">
 			<!-- Personal Information -->
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between">
@@ -163,18 +163,18 @@
 					{#if isEditing}
 						<div class="flex gap-2">
 							<Button size="sm" onclick={handleSave}>
-								<Save class="h-4 w-4 mr-2" />
+								<Save class="mr-2 h-4 w-4" />
 								Save
 							</Button>
 							<Button size="sm" variant="outline" onclick={handleCancel}>
-								<X class="h-4 w-4 mr-2" />
+								<X class="mr-2 h-4 w-4" />
 								Cancel
 							</Button>
 						</div>
 					{/if}
 				</Card.Header>
 				<Card.Content class="space-y-4">
-					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<div class="space-y-2">
 							<Label for="username">Username</Label>
 							{#if isEditing}
@@ -184,8 +184,8 @@
 									placeholder="Enter username"
 								/>
 							{:else}
-								<div class="flex items-center gap-2 p-2 bg-muted rounded-md">
-									<User class="h-4 w-4 text-muted-foreground" />
+								<div class="bg-muted flex items-center gap-2 rounded-md p-2">
+									<User class="text-muted-foreground h-4 w-4" />
 									<span>{userState.user?.username || 'Not set'}</span>
 								</div>
 							{/if}
@@ -201,15 +201,15 @@
 									placeholder="Enter email"
 								/>
 							{:else}
-								<div class="flex items-center gap-2 p-2 bg-muted rounded-md">
-									<Mail class="h-4 w-4 text-muted-foreground" />
+								<div class="bg-muted flex items-center gap-2 rounded-md p-2">
+									<Mail class="text-muted-foreground h-4 w-4" />
 									<span>{editedProfile.email || 'Not set'}</span>
 								</div>
 							{/if}
 						</div>
 					</div>
 
-					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<div class="space-y-2">
 							<Label for="location">Location</Label>
 							{#if isEditing}
@@ -219,7 +219,7 @@
 									placeholder="Enter location"
 								/>
 							{:else}
-								<div class="p-2 bg-muted rounded-md">
+								<div class="bg-muted rounded-md p-2">
 									<span class="text-muted-foreground">{editedProfile.location || 'Not set'}</span>
 								</div>
 							{/if}
@@ -234,7 +234,7 @@
 									placeholder="https://example.com"
 								/>
 							{:else}
-								<div class="p-2 bg-muted rounded-md">
+								<div class="bg-muted rounded-md p-2">
 									<span class="text-muted-foreground">{editedProfile.website || 'Not set'}</span>
 								</div>
 							{/if}
@@ -251,7 +251,7 @@
 								class="min-h-[100px]"
 							/>
 						{:else}
-							<div class="p-2 bg-muted rounded-md min-h-[100px]">
+							<div class="bg-muted min-h-[100px] rounded-md p-2">
 								<span class="text-muted-foreground">
 									{editedProfile.bio || 'No bio available.'}
 								</span>
@@ -274,11 +274,9 @@
 								<Key class="h-4 w-4" />
 								Change Password
 							</Label>
-							<p class="text-sm text-muted-foreground">Update your account password</p>
+							<p class="text-muted-foreground text-sm">Update your account password</p>
 						</div>
-						<Button variant="outline" size="sm">
-							Change
-						</Button>
+						<Button variant="outline" size="sm">Change</Button>
 					</div>
 
 					<Separator />
@@ -289,7 +287,7 @@
 								<Bell class="h-4 w-4" />
 								Email Notifications
 							</Label>
-							<p class="text-sm text-muted-foreground">Receive notifications about your projects</p>
+							<p class="text-muted-foreground text-sm">Receive notifications about your projects</p>
 						</div>
 						<input type="checkbox" checked class="rounded" />
 					</div>
@@ -298,15 +296,15 @@
 
 					<div class="flex items-center justify-between">
 						<div class="space-y-1">
-							<Label class="flex items-center gap-2 text-destructive">
+							<Label class="text-destructive flex items-center gap-2">
 								<Settings class="h-4 w-4" />
 								Delete Account
 							</Label>
-							<p class="text-sm text-muted-foreground">Permanently delete your account and all data</p>
+							<p class="text-muted-foreground text-sm">
+								Permanently delete your account and all data
+							</p>
 						</div>
-						<Button variant="destructive" size="sm">
-							Delete
-						</Button>
+						<Button variant="destructive" size="sm">Delete</Button>
 					</div>
 				</Card.Content>
 			</Card.Root>

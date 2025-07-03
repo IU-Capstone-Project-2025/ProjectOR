@@ -9,13 +9,13 @@
 	import { getProjectById } from '../(components)/dataLoaders';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { 
-		ArrowLeft, 
-		Globe, 
-		Lock, 
-		Calendar, 
-		User, 
-		Edit3, 
+	import {
+		ArrowLeft,
+		Globe,
+		Lock,
+		Calendar,
+		User,
+		Edit3,
 		Trash2,
 		Share2,
 		Bookmark,
@@ -48,11 +48,11 @@
 	}
 </script>
 
-<div class="container mx-auto px-4 py-6 max-w-6xl space-y-6">
+<div class="container mx-auto max-w-6xl space-y-6 px-4 py-6">
 	<!-- Back Navigation -->
 	<div class="flex items-center gap-4">
 		<Button variant="outline" size="sm" onclick={goBack}>
-			<ArrowLeft class="h-4 w-4 mr-2" />
+			<ArrowLeft class="mr-2 h-4 w-4" />
 			Back to Explore
 		</Button>
 	</div>
@@ -67,9 +67,9 @@
 		</div>
 	{:else}
 		{@const project = $projectQuery.data}
-		
+
 		<!-- Project Header -->
-		<div class="flex flex-col lg:flex-row gap-6">
+		<div class="flex flex-col gap-6 lg:flex-row">
 			<!-- Main Content -->
 			<div class="flex-1 space-y-6">
 				<Card.Root>
@@ -80,10 +80,10 @@
 									<h1 class="text-3xl font-bold tracking-tight">{project.title}</h1>
 									<Badge variant={project.is_public ? 'secondary' : 'outline'}>
 										{#if project.is_public}
-											<Globe class="h-3 w-3 mr-1" />
+											<Globe class="mr-1 h-3 w-3" />
 											Public
 										{:else}
-											<Lock class="h-3 w-3 mr-1" />
+											<Lock class="mr-1 h-3 w-3" />
 											Private
 										{/if}
 									</Badge>
@@ -92,15 +92,15 @@
 							</div>
 							<div class="flex items-center gap-2">
 								<Button size="sm">
-									<Bookmark class="h-4 w-4 mr-2" />
+									<Bookmark class="mr-2 h-4 w-4" />
 									Bookmark
 								</Button>
 								<Button size="sm" variant="outline">
-									<Share2 class="h-4 w-4 mr-2" />
+									<Share2 class="mr-2 h-4 w-4" />
 									Share
 								</Button>
 								<Button size="sm" variant="outline">
-									<Edit3 class="h-4 w-4 mr-2" />
+									<Edit3 class="mr-2 h-4 w-4" />
 									Edit
 								</Button>
 							</div>
@@ -109,7 +109,7 @@
 						<Separator />
 
 						<!-- Project Meta -->
-						<div class="flex items-center gap-6 text-sm text-muted-foreground">
+						<div class="text-muted-foreground flex items-center gap-6 text-sm">
 							<div class="flex items-center gap-1">
 								<User class="h-4 w-4" />
 								<span>Project Owner</span>
@@ -129,7 +129,7 @@
 						<div class="space-y-6">
 							<!-- Description -->
 							<div>
-								<h2 class="text-lg font-semibold mb-3">About this project</h2>
+								<h2 class="mb-3 text-lg font-semibold">About this project</h2>
 								<p class="text-muted-foreground leading-relaxed">
 									{project.description || 'No description provided for this project.'}
 								</p>
@@ -139,23 +139,23 @@
 
 							<!-- Project Stats -->
 							<div>
-								<h2 class="text-lg font-semibold mb-4">Project Statistics</h2>
-								<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-									<div class="text-center p-4 bg-muted rounded-lg">
+								<h2 class="mb-4 text-lg font-semibold">Project Statistics</h2>
+								<div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+									<div class="bg-muted rounded-lg p-4 text-center">
 										<div class="text-2xl font-bold">15</div>
-										<div class="text-sm text-muted-foreground">Files</div>
+										<div class="text-muted-foreground text-sm">Files</div>
 									</div>
-									<div class="text-center p-4 bg-muted rounded-lg">
+									<div class="bg-muted rounded-lg p-4 text-center">
 										<div class="text-2xl font-bold">3</div>
-										<div class="text-sm text-muted-foreground">Contributors</div>
+										<div class="text-muted-foreground text-sm">Contributors</div>
 									</div>
-									<div class="text-center p-4 bg-muted rounded-lg">
+									<div class="bg-muted rounded-lg p-4 text-center">
 										<div class="text-2xl font-bold">42</div>
-										<div class="text-sm text-muted-foreground">Commits</div>
+										<div class="text-muted-foreground text-sm">Commits</div>
 									</div>
-									<div class="text-center p-4 bg-muted rounded-lg">
+									<div class="bg-muted rounded-lg p-4 text-center">
 										<div class="text-2xl font-bold">7</div>
-										<div class="text-sm text-muted-foreground">Branches</div>
+										<div class="text-muted-foreground text-sm">Branches</div>
 									</div>
 								</div>
 							</div>
@@ -173,20 +173,26 @@
 					</Card.Header>
 					<Card.Content>
 						<div class="space-y-2">
-							<div class="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer">
-								<Code class="h-4 w-4 text-muted-foreground" />
+							<div
+								class="bg-muted hover:bg-muted/80 flex cursor-pointer items-center gap-3 rounded-lg p-3 transition-colors"
+							>
+								<Code class="text-muted-foreground h-4 w-4" />
 								<span class="font-medium">src/</span>
-								<span class="text-sm text-muted-foreground ml-auto">Source code</span>
+								<span class="text-muted-foreground ml-auto text-sm">Source code</span>
 							</div>
-							<div class="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer">
-								<FileText class="h-4 w-4 text-muted-foreground" />
+							<div
+								class="bg-muted hover:bg-muted/80 flex cursor-pointer items-center gap-3 rounded-lg p-3 transition-colors"
+							>
+								<FileText class="text-muted-foreground h-4 w-4" />
 								<span class="font-medium">README.md</span>
-								<span class="text-sm text-muted-foreground ml-auto">Project documentation</span>
+								<span class="text-muted-foreground ml-auto text-sm">Project documentation</span>
 							</div>
-							<div class="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer">
-								<Code class="h-4 w-4 text-muted-foreground" />
+							<div
+								class="bg-muted hover:bg-muted/80 flex cursor-pointer items-center gap-3 rounded-lg p-3 transition-colors"
+							>
+								<Code class="text-muted-foreground h-4 w-4" />
 								<span class="font-medium">package.json</span>
-								<span class="text-sm text-muted-foreground ml-auto">Dependencies</span>
+								<span class="text-muted-foreground ml-auto text-sm">Dependencies</span>
 							</div>
 						</div>
 					</Card.Content>
@@ -194,7 +200,7 @@
 			</div>
 
 			<!-- Sidebar -->
-			<div class="lg:w-80 space-y-6">
+			<div class="space-y-6 lg:w-80">
 				<!-- Quick Actions -->
 				<Card.Root>
 					<Card.Header>
@@ -202,15 +208,15 @@
 					</Card.Header>
 					<Card.Content class="space-y-2">
 						<Button variant="outline" size="sm" class="w-full justify-start">
-							<GitBranch class="h-4 w-4 mr-2" />
+							<GitBranch class="mr-2 h-4 w-4" />
 							Create Branch
 						</Button>
 						<Button variant="outline" size="sm" class="w-full justify-start">
-							<Code class="h-4 w-4 mr-2" />
+							<Code class="mr-2 h-4 w-4" />
 							Clone Repository
 						</Button>
 						<Button variant="outline" size="sm" class="w-full justify-start">
-							<FileText class="h-4 w-4 mr-2" />
+							<FileText class="mr-2 h-4 w-4" />
 							Download ZIP
 						</Button>
 					</Card.Content>
@@ -244,11 +250,13 @@
 					</Card.Header>
 					<Card.Content class="space-y-3">
 						<div class="flex items-center gap-3">
-							<div class="h-8 w-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-medium">
+							<div
+								class="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
+							>
 								U
 							</div>
-							<div class="flex-1 min-w-0">
-								<div class="font-medium text-sm">Project Owner</div>
+							<div class="min-w-0 flex-1">
+								<div class="text-sm font-medium">Project Owner</div>
 								<div class="text-muted-foreground text-xs">Owner</div>
 							</div>
 						</div>

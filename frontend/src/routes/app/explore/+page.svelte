@@ -28,42 +28,44 @@
 	const filteredProjects = $derived(() => {
 		if (!$projectsQuery.data) return [];
 		let filtered = $projectsQuery.data;
-		
+
 		if (searchTerm) {
-			filtered = filtered.filter((project: Project) => 
-				project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				(project.description && project.description.toLowerCase().includes(searchTerm.toLowerCase()))
+			filtered = filtered.filter(
+				(project: Project) =>
+					project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					(project.description &&
+						project.description.toLowerCase().includes(searchTerm.toLowerCase()))
 			);
 		}
-		
+
 		if (showPublicOnly) {
 			filtered = filtered.filter((project: Project) => project.is_public);
 		}
-		
+
 		return filtered;
 	});
 </script>
 
-<div class="container mx-auto px-4 py-6 space-y-6">
+<div class="container mx-auto space-y-6 px-4 py-6">
 	<!-- Header Section -->
 	<div class="flex flex-col gap-4">
-		<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+		<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 			<div>
 				<h1 class="text-3xl font-bold tracking-tight">Explore Projects</h1>
 				<p class="text-muted-foreground mt-1">Discover amazing projects from the community</p>
 			</div>
 			<div class="flex items-center gap-2">
-				<Button 
-					variant={viewMode === 'grid' ? 'default' : 'outline'} 
+				<Button
+					variant={viewMode === 'grid' ? 'default' : 'outline'}
 					size="sm"
-					onclick={() => viewMode = 'grid'}
+					onclick={() => (viewMode = 'grid')}
 				>
 					<Grid3X3 class="h-4 w-4" />
 				</Button>
-				<Button 
-					variant={viewMode === 'list' ? 'default' : 'outline'} 
+				<Button
+					variant={viewMode === 'list' ? 'default' : 'outline'}
 					size="sm"
-					onclick={() => viewMode = 'list'}
+					onclick={() => (viewMode = 'list')}
 				>
 					<List class="h-4 w-4" />
 				</Button>
@@ -72,9 +74,9 @@
 
 		<!-- Search and Filter Section -->
 		<Card.Root class="p-4">
-			<div class="flex flex-col md:flex-row gap-4">
+			<div class="flex flex-col gap-4 md:flex-row">
 				<div class="relative flex-1">
-					<Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+					<Search class="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
 					<Input
 						bind:value={searchTerm}
 						placeholder="Search projects by title or description..."
@@ -83,15 +85,11 @@
 				</div>
 				<div class="flex items-center gap-4">
 					<label class="flex items-center gap-2 text-sm">
-						<input 
-							type="checkbox" 
-							bind:checked={showPublicOnly}
-							class="rounded"
-						/>
+						<input type="checkbox" bind:checked={showPublicOnly} class="rounded" />
 						Public only
 					</label>
 					<Button variant="outline" size="sm">
-						<Filter class="h-4 w-4 mr-2" />
+						<Filter class="mr-2 h-4 w-4" />
 						Filters
 					</Button>
 				</div>
@@ -102,7 +100,11 @@
 	<!-- Results Section -->
 	<div class="space-y-4">
 		{#if $projectsQuery.isPending}
-			<div class={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+			<div
+				class={viewMode === 'grid'
+					? 'grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'
+					: 'space-y-4'}
+			>
 				{#each Array(12) as _}
 					<ProjectSkeleton />
 				{/each}
@@ -114,25 +116,35 @@
 		{:else}
 			<!-- Results Count -->
 			<div class="flex items-center justify-between">
-				<p class="text-sm text-muted-foreground">
+				<p class="text-muted-foreground text-sm">
 					Showing {filteredProjects().length} of {$projectsQuery.data.length} projects
 				</p>
 			</div>
 
 			{#if filteredProjects().length === 0}
 				<div class="flex flex-col items-center justify-center py-12 text-center">
-					<div class="rounded-full bg-muted p-3 mb-4">
-						<Search class="h-6 w-6 text-muted-foreground" />
+					<div class="bg-muted mb-4 rounded-full p-3">
+						<Search class="text-muted-foreground h-6 w-6" />
 					</div>
-					<h3 class="text-lg font-semibold mb-2">No projects found</h3>
+					<h3 class="mb-2 text-lg font-semibold">No projects found</h3>
 					<p class="text-muted-foreground mb-4">Try adjusting your search or filters</p>
-					<Button variant="outline" onclick={() => { searchTerm = ''; showPublicOnly = false; }}>
+					<Button
+						variant="outline"
+						onclick={() => {
+							searchTerm = '';
+							showPublicOnly = false;
+						}}
+					>
 						Clear filters
 					</Button>
 				</div>
 			{:else}
-				<div class={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
-					{#each filteredProjects() as project(project.title)}
+				<div
+					class={viewMode === 'grid'
+						? 'grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'
+						: 'space-y-4'}
+				>
+					{#each filteredProjects() as project (project.title)}
 						<ProjectCard {project} {viewMode} />
 					{/each}
 				</div>
