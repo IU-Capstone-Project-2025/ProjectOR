@@ -6,15 +6,15 @@ from typing import Optional
 class NewProjectSchema(BaseModel):
     title: str
     description: Optional[str]
-    is_public: bool
-    is_opensource: bool
-    is_dead: bool
+    is_public: Optional[bool]
+    is_opensource: Optional[bool]
+    is_dead: Optional[bool]
 
 
 class ProjectSchema(NewProjectSchema):
     id: int
     created_at: datetime
-    ceo_id: int
+    ceo_id: Optional[int]
 
     class Config:
         from_attributes = True
