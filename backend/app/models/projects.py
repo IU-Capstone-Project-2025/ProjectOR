@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, func, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, func, Boolean, ForeignKey
 from dependencies.database import base
 
 
@@ -8,7 +8,7 @@ class Project(base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     title = Column(String, unique=True, nullable=False)
     description = Column(String)
-    created_at = Column(Date, default=func.current_date())
+    created_at = Column(DateTime, default=func.current_timestamp())
     is_public = Column(Boolean, nullable=True, default=True)
     status = Column(String)
     ceo_id = Column(Integer, ForeignKey("users.id"), nullable=True)

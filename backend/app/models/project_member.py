@@ -2,7 +2,7 @@ from sqlalchemy import (
     Column,
     Integer,
     Index,
-    Date,
+    DateTime,
     func,
     ForeignKey,
     PrimaryKeyConstraint,
@@ -15,7 +15,7 @@ class ProjectMember(base):
 
     project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    created_at = Column(Date, default=func.current_date())
+    created_at = Column(DateTime, default=func.current_timestamp())
 
     __table_args__ = (
         PrimaryKeyConstraint("project_id", "user_id"),

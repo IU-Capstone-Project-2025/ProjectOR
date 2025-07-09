@@ -2,7 +2,7 @@ from sqlalchemy import (
     Column,
     Integer,
     Index,
-    Date,
+    DateTime,
     func,
     Boolean,
     ForeignKey,
@@ -16,7 +16,7 @@ class Application(base):
 
     project_id = Column(Integer, ForeignKey("projects.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(Date, default=func.current_date())
+    created_at = Column(DateTime, default=func.current_timestamp())
     is_approved = Column(Boolean, nullable=True)
 
     __table_args__ = (
