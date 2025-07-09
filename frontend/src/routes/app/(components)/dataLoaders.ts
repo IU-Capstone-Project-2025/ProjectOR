@@ -1,7 +1,12 @@
 import { client } from '$lib/api/client';
 import type { components } from '@/api/v1';
 
-export const createProject = async (title: string, description: string, isOpensource: boolean, isDead: boolean) => {
+export const createProject = async (
+	title: string,
+	description: string,
+	isOpensource: boolean,
+	isDead: boolean
+) => {
 	const { data, error } = await client.POST('/api/projects/', {
 		body: {
 			title,

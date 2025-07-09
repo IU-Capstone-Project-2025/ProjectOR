@@ -21,8 +21,17 @@
 	const queryClient = useQueryClient();
 
 	const createProjectMutation = createMutation({
-		mutationFn: async ({ title, description, isOpensource, isDead }: { title: string; description: string; isOpensource: boolean; isDead: boolean }) =>
-			await createProject(title, description, isOpensource, isDead),
+		mutationFn: async ({
+			title,
+			description,
+			isOpensource,
+			isDead
+		}: {
+			title: string;
+			description: string;
+			isOpensource: boolean;
+			isDead: boolean;
+		}) => await createProject(title, description, isOpensource, isDead),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['projects'] });
 			toast.success('Project created successfully');
@@ -66,15 +75,15 @@
 				<Label for="isDead-{id}" class="text-right">Startup Graveyard</Label>
 				<div class="col-span-3">
 					<Switch bind:checked={isDead} id="isDead-{id}" />
-					<p class="text-sm text-muted-foreground mt-1">Mark if this project is no longer active. It will be listed in the startup graveyard section.</p>
+					<p class="text-muted-foreground mt-1 text-sm">
+						Mark if this project is no longer active. It will be listed in the startup graveyard
+						section.
+					</p>
 				</div>
 			</div>
 		</div>
 		<Dialog.Footer>
-			<Button
-				type="submit"
-				disabled={!name || !description || $createProjectMutation.isPending}
-			>
+			<Button type="submit" disabled={!name || !description || $createProjectMutation.isPending}>
 				{#if $createProjectMutation.isPending}
 					<LoaderCircle class="animate-spin" />
 					Loading...

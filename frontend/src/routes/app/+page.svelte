@@ -11,7 +11,7 @@
 			goto('/auth/login');
 			return;
 		}
-		if (data.user.role === "VIEWER") {
+		if (data.user.role === 'VIEWER') {
 			isChooseRoleDialogOpen = true;
 			return;
 		}
