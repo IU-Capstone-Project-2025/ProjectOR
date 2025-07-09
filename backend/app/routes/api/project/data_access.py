@@ -116,7 +116,7 @@ class ProjectsDataAccess:
         res = await self.db_session.execute(query)
         application = res.scalars().first()
         if not application:
-            raise ProjectNotFoundError(
+            raise ApplicationNotFoundError(
                 f"Application for user {approve_schema.user_id} not found in project {project_id}."
             )
         return ApplicationSchema.model_validate(application)

@@ -3,7 +3,7 @@ from fastapi import Depends
 from fastapi.exceptions import HTTPException
 from models.users import UserRole
 from routes.api.project.data_access import ProjectsDataAccessDep
-from routes.api.project.exceptions import ProjectNotFoundError
+from routes.api.project.exceptions import ApplicationNotFoundError
 from routes.api.project.schemas import (
     ProjectSchema,
     NewProjectSchema,
@@ -123,7 +123,7 @@ class ProjectService:
                 project_id,
                 approve_schema,
             )
-        except ProjectNotFoundError:
+        except ApplicationNotFoundError:
             raise HTTPException(
                 status_code=404,
                 detail=f"Application for user {approve_schema.user_id} not found in project {project_id}.",
