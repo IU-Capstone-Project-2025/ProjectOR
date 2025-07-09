@@ -26,6 +26,7 @@ async def get_db() -> AsyncSession:
         except Exception as e:
             await session.rollback()
             raise e
+        await session.commit()
 
 
 DBSessionDep = Annotated[AsyncSession, Depends(get_db)]

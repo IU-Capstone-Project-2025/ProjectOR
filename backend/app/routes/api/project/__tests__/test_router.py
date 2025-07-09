@@ -24,10 +24,24 @@ def mock_user():
 def sample_projects():
     return [
         ProjectSchema(
-            id=1, title="Project 1", description="Description 1", is_public=True
+            id=1,
+            title="Project 1",
+            description="Description 1",
+            is_public=True,
+            is_dead=False,
+            is_opensource=True,
+            ceo_id=1,
+            created_at="2023-10-01T00:00:00Z",
         ),
         ProjectSchema(
-            id=2, title="Project 2", description="Description 2", is_public=False
+            id=2,
+            title="Project 2",
+            description="Description 2",
+            is_public=True,
+            is_dead=False,
+            is_opensource=True,
+            ceo_id=1,
+            created_at="2023-10-01T00:00:00Z",
         ),
     ]
 
