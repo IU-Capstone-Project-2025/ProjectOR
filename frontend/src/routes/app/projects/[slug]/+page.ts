@@ -1,7 +1,7 @@
 import type { PageLoad } from './$types';
 import { getProjectById } from '../(components)/dataLoaders';
 
-export const load: PageLoad = async ({ params, parent, fetch }) => {
+export const load: PageLoad = async ({ params, parent }) => {
 	const { queryClient } = await parent();
 	const projectId = parseInt(params.slug);
 

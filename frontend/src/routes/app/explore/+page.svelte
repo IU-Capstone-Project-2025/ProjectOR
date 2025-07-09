@@ -105,7 +105,7 @@
 					? 'grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'
 					: 'space-y-4'}
 			>
-				{#each Array(12) as _}
+				{#each Array(12) as _ (_)}
 					<ProjectSkeleton />
 				{/each}
 			</div>

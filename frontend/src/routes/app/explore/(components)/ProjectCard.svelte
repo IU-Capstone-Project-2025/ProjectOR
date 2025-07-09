@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
-	import * as Avatar from '$lib/components/ui/avatar';
 	import { type components } from '@/api/v1';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Eye, Lock, Globe, Calendar, User } from '@lucide/svelte';

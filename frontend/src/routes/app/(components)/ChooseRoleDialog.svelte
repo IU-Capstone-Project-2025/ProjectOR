@@ -6,7 +6,6 @@
 	import { cn } from '$lib/utils';
 	import { setRole } from './dataLoaders';
 	import { createMutation } from '@tanstack/svelte-query';
-	import { invalidateAll } from '$app/navigation';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import { type components } from '$lib/api/v1';

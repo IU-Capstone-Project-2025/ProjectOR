@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { type components } from '@/api/v1';
 	import { createQuery } from '@tanstack/svelte-query';
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -7,7 +6,6 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
 	import { getProjectById } from '../(components)/dataLoaders';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import {
 		ArrowLeft,
@@ -16,15 +14,12 @@
 		Calendar,
 		User,
 		Edit3,
-		Trash2,
 		Share2,
 		Bookmark,
 		GitBranch,
 		Code,
 		FileText
 	} from '@lucide/svelte';
-
-	type Project = components['schemas']['ProjectSchema'] & { id: number };
 
 	let { data } = $props();
 	const projectId = data.projectId;
