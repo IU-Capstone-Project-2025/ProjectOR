@@ -11,9 +11,9 @@ class Project(base):
     created_at = Column(DateTime, default=func.current_timestamp())
     is_public = Column(Boolean, nullable=True, default=True)
     status = Column(String)
-    ceo_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    is_opensource = Column(Boolean, nullable=True, default=True)
-    is_dead = Column(Boolean, nullable=True, default=False)
+    ceo_id = Column(Integer, ForeignKey("users.id"), nullable=True, server_default="1")
+    is_opensource = Column(Boolean, nullable=True, default=True, server_default="TRUE")
+    is_dead = Column(Boolean, nullable=True, default=False, server_default="FALSE")
 
     def __repr__(self):
         return f"<Project({', '.join(f'{k}={getattr(self, k)!r}' for k in self.__table__.columns.keys())})>"
