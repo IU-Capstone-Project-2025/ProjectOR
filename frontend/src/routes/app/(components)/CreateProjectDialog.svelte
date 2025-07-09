@@ -4,6 +4,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Textarea } from '@/components/ui/textarea';
+	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { toast } from 'svelte-sonner';
 	import { createProject } from './dataLoaders';
@@ -11,6 +12,8 @@
 
 	let name = $state('');
 	let description = $state('');
+	let isOpensource = $state(false);
+	let isDead = $state(false);
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 	const id = $props.id();
@@ -18,14 +21,16 @@
 	const queryClient = useQueryClient();
 
 	const createProjectMutation = createMutation({
-		mutationFn: async ({ title, description }: { title: string; description: string }) =>
-			await createProject(title, description),
+		mutationFn: async ({ title, description, isOpensource, isDead }: { title: string; description: string; isOpensource: boolean; isDead: boolean }) =>
+			await createProject(title, description, isOpensource, isDead),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['projects'] });
 			toast.success('Project created successfully');
 			open = false;
 			name = '';
 			description = '';
+			isOpensource = false;
+			isDead = false;
 		},
 		onError: (error) => {
 			toast.error(`Failed to create project: ${error.message}`);
@@ -53,12 +58,22 @@
 					placeholder="Enter a brief description of the project"
 				/>
 			</div>
+			<div class="grid grid-cols-4 items-center gap-4">
+				<Label for="isOpensource-{id}" class="text-right">Open Source</Label>
+				<Switch bind:checked={isOpensource} id="isOpensource-{id}" class="col-span-3" />
+			</div>
+			<div class="grid grid-cols-4 items-center gap-4">
+				<Label for="isDead-{id}" class="text-right">Startup Graveyard</Label>
+				<div class="col-span-3">
+					<Switch bind:checked={isDead} id="isDead-{id}" />
+					<p class="text-sm text-muted-foreground mt-1">Mark if this project is no longer active. It will be listed in the startup graveyard section.</p>
+				</div>
+			</div>
 		</div>
 		<Dialog.Footer>
 			<Button
 				type="submit"
 				disabled={!name || !description || $createProjectMutation.isPending}
-				onclick={() => $createProjectMutation.mutate({ title: name, description })}
 			>
 				{#if $createProjectMutation.isPending}
 					<LoaderCircle class="animate-spin" />

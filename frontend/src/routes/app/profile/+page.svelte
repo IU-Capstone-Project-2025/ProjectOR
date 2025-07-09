@@ -26,7 +26,7 @@
 	let isEditing = $state(false);
 	let editedProfile = $state({
 		username: userState.user?.username || '',
-		email: "",
+		email: '',
 		bio: '',
 		location: '',
 		website: ''
@@ -36,7 +36,7 @@
 		isEditing = true;
 		editedProfile = {
 			username: userState.user?.username || '',
-			email: "",
+			email: '',
 			bio: '',
 			location: '',
 			website: ''
