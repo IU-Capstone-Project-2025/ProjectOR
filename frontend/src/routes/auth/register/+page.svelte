@@ -21,7 +21,7 @@
 	const registerMutation = createMutation({
 		mutationFn: async () => await register(username, password),
 		onSuccess: (data) => {
-			toast.success('Registration successful! Redirecting to login...');
+			toast.success('Registration successful! Redirecting...');
 			userState.set_token(data.access_token);
 			goto('/app');
 		},

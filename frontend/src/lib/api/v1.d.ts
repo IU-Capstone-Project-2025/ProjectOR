@@ -56,6 +56,74 @@ export interface paths {
 		patch?: never;
 		trace?: never;
 	};
+	'/api/projects/{project_id}/apply': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Apply To Project */
+		post: operations['apply_to_project_api_projects__project_id__apply_post'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/projects/{project_id}/applications': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Get Project Applications */
+		get: operations['get_project_applications_api_projects__project_id__applications_get'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/projects/{project_id}/new-applications': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Get Project New Applications */
+		get: operations['get_project_new_applications_api_projects__project_id__new_applications_get'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/projects/{project_id}/applications/approve': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		/** Approve Application */
+		patch: operations['approve_application_api_projects__project_id__applications_approve_patch'];
+		trace?: never;
+	};
 	'/api/auth/token': {
 		parameters: {
 			query?: never;
@@ -90,10 +158,65 @@ export interface paths {
 		patch?: never;
 		trace?: never;
 	};
+	'/api/user/set-role': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Set User Role */
+		post: operations['set_user_role_api_user_set_role_post'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/user/get-me': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Get Me */
+		post: operations['get_me_api_user_get_me_post'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 }
 export type webhooks = Record<string, never>;
 export interface components {
 	schemas: {
+		/** ApplicationSchema */
+		ApplicationSchema: {
+			/** Project Id */
+			project_id: number;
+			/** User Id */
+			user_id: number;
+			/** Is Approved */
+			is_approved: boolean | null;
+			/**
+			 * Created At
+			 * Format: date-time
+			 */
+			created_at: string;
+		};
+		/** ApproveApplicationSchema */
+		ApproveApplicationSchema: {
+			/** Is Approved */
+			is_approved: boolean;
+			/** User Id */
+			user_id: number;
+		};
 		/** Body_login_for_access_token_api_auth_token_post */
 		Body_login_for_access_token_api_auth_token_post: {
 			/** Grant Type */
@@ -117,6 +240,26 @@ export interface components {
 			/** Detail */
 			detail?: components['schemas']['ValidationError'][];
 		};
+		/** NewProjectSchema */
+		NewProjectSchema: {
+			/** Title */
+			title: string;
+			/** Description */
+			description: string | null;
+			/** Is Public */
+			is_public: boolean | null;
+			/** Is Opensource */
+			is_opensource: boolean | null;
+			/** Is Dead */
+			is_dead: boolean | null;
+		};
+		/** ProjectMemberSchema */
+		ProjectMemberSchema: {
+			/** Project Id */
+			project_id: number;
+			/** User Id */
+			user_id: number;
+		};
 		/** ProjectSchema */
 		ProjectSchema: {
 			/** Title */
@@ -124,7 +267,24 @@ export interface components {
 			/** Description */
 			description: string | null;
 			/** Is Public */
-			is_public: boolean;
+			is_public: boolean | null;
+			/** Is Opensource */
+			is_opensource: boolean | null;
+			/** Is Dead */
+			is_dead: boolean | null;
+			/** Id */
+			id: number;
+			/**
+			 * Created At
+			 * Format: date-time
+			 */
+			created_at: string;
+			/** Ceo Id */
+			ceo_id: number | null;
+		};
+		/** SetUserRoleSchema */
+		SetUserRoleSchema: {
+			role: components['schemas']['UserRole'];
 		};
 		/** Token */
 		Token: {
@@ -133,6 +293,12 @@ export interface components {
 			/** Token Type */
 			token_type: string;
 		};
+		/** User */
+		User: {
+			/** Username */
+			username: string;
+			role: components['schemas']['UserRole'];
+		};
 		/** UserRegister */
 		UserRegister: {
 			/** Username */
@@ -140,6 +306,11 @@ export interface components {
 			/** Password */
 			password: string;
 		};
+		/**
+		 * UserRole
+		 * @enum {string}
+		 */
+		UserRole: 'VIEWER' | 'FOUNDER' | 'DEVELOPER' | 'INVESTOR';
 		/** ValidationError */
 		ValidationError: {
 			/** Location */
@@ -207,7 +378,7 @@ export interface operations {
 		};
 		requestBody: {
 			content: {
-				'application/json': components['schemas']['ProjectSchema'];
+				'application/json': components['schemas']['NewProjectSchema'];
 			};
 		};
 		responses: {
@@ -249,6 +420,134 @@ export interface operations {
 				};
 				content: {
 					'application/json': components['schemas']['ProjectSchema'];
+				};
+			};
+			/** @description Validation Error */
+			422: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HTTPValidationError'];
+				};
+			};
+		};
+	};
+	apply_to_project_api_projects__project_id__apply_post: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				project_id: number;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful Response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ApplicationSchema'];
+				};
+			};
+			/** @description Validation Error */
+			422: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HTTPValidationError'];
+				};
+			};
+		};
+	};
+	get_project_applications_api_projects__project_id__applications_get: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				project_id: number;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful Response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ApplicationSchema'][];
+				};
+			};
+			/** @description Validation Error */
+			422: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HTTPValidationError'];
+				};
+			};
+		};
+	};
+	get_project_new_applications_api_projects__project_id__new_applications_get: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				project_id: number;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful Response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ApplicationSchema'][];
+				};
+			};
+			/** @description Validation Error */
+			422: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HTTPValidationError'];
+				};
+			};
+		};
+	};
+	approve_application_api_projects__project_id__applications_approve_patch: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				project_id: number;
+			};
+			cookie?: never;
+		};
+		requestBody: {
+			content: {
+				'application/json': components['schemas']['ApproveApplicationSchema'];
+			};
+		};
+		responses: {
+			/** @description Successful Response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ProjectMemberSchema'];
 				};
 			};
 			/** @description Validation Error */
@@ -324,6 +623,61 @@ export interface operations {
 				};
 				content: {
 					'application/json': components['schemas']['HTTPValidationError'];
+				};
+			};
+		};
+	};
+	set_user_role_api_user_set_role_post: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody: {
+			content: {
+				'application/json': components['schemas']['SetUserRoleSchema'];
+			};
+		};
+		responses: {
+			/** @description Successful Response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						[key: string]: string;
+					};
+				};
+			};
+			/** @description Validation Error */
+			422: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HTTPValidationError'];
+				};
+			};
+		};
+	};
+	get_me_api_user_get_me_post: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful Response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['User'];
 				};
 			};
 		};
