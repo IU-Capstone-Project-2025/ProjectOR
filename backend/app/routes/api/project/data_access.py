@@ -4,7 +4,7 @@ from dependencies.database import DBSessionDep
 from models import Project, Application, ProjectMember
 from sqlalchemy import select, update
 
-from routes.api.project.exceptions import ProjectNotFoundError
+from routes.api.project.exceptions import ApplicationNotFoundError
 from routes.api.project.schemas import (
     ProjectSchema,
     ApplicationSchema,
