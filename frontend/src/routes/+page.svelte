@@ -17,6 +17,7 @@
 		Star,
 		Github
 	} from '@lucide/svelte';
+	import GlobeCard from '@/components/landing/GlobeCard.svelte';
 </script>
 
 <div class="flex min-h-screen flex-col">
@@ -83,13 +84,14 @@
 					</div>
 					<div class="flex items-center justify-center">
 						<div class="relative">
-							<img
-								src={placeholder}
-								width="600"
-								height="400"
-								alt="Platform Dashboard"
-								class="aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"
-							/>
+							<!--							<img-->
+							<!--								src={placeholder}-->
+							<!--								width="600"-->
+							<!--								height="400"-->
+							<!--								alt="Platform Dashboard"-->
+							<!--								class="aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"-->
+							<!--							/>-->
+							<GlobeCard />
 							<div
 								class="from-background/20 absolute inset-0 rounded-xl bg-gradient-to-t to-transparent"
 							/>

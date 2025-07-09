@@ -17,7 +17,7 @@
 			label: 'Viewer',
 			description: 'Browse and explore content',
 			icon: Eye,
-			color: 'bg-blue-50 border-blue-200 hover:bg-blue-100',
+			color: 'bg-blue-50/10 border-blue-200 hover:bg-blue-100/50',
 			iconColor: 'text-blue-600'
 		},
 		{
@@ -25,7 +25,7 @@
 			label: 'Founder',
 			description: 'Build and manage your startup',
 			icon: Rocket,
-			color: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
+			color: 'bg-purple-50/10 border-purple-200 hover:bg-purple-100/50',
 			iconColor: 'text-purple-600'
 		},
 		{
@@ -33,7 +33,7 @@
 			label: 'Developer',
 			description: 'Create and contribute to projects',
 			icon: Code,
-			color: 'bg-green-50 border-green-200 hover:bg-green-100',
+			color: 'bg-green-50/10 border-green-200 hover:bg-green-100/50',
 			iconColor: 'text-green-600'
 		},
 		{
@@ -41,7 +41,7 @@
 			label: 'Investor',
 			description: 'Discover investment opportunities',
 			icon: TrendingUp,
-			color: 'bg-orange-50 border-orange-200 hover:bg-orange-100',
+			color: 'bg-orange-50/10 border-orange-200 hover:bg-orange-100/50',
 			iconColor: 'text-orange-600'
 		}
 	];
@@ -82,13 +82,13 @@
 						isSelected ? 'border-primary bg-primary/5 ring-primary/20 ring-2' : role.color
 					)}
 				>
-					<div class={cn('rounded-lg p-2', isSelected ? 'bg-primary/10' : 'bg-white')}>
+					<div class={cn('rounded-lg p-2', isSelected ? 'bg-primary/10' : 'bg-background')}>
 						<Icon class={cn('h-5 w-5', isSelected ? 'text-primary' : role.iconColor)} />
 					</div>
 
 					<div class="flex-1">
 						<div class="flex items-center gap-2">
-							<h3 class="text-foreground font-medium">{role.label}</h3>
+							<h3 class="font-medium">{role.label}</h3>
 							{#if isSelected}
 								<Badge variant="default" class="h-5 px-2">
 									<Check class="h-3 w-3" />
