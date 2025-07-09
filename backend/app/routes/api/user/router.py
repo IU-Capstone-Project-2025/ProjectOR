@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from dependencies.auth import get_current_user
 from routes.api.user.service import UserServiceDep
 from routes.api.user.schemas import SetUserRoleSchema
-
+from schemas.user import User
 
 router = APIRouter(prefix="/user", tags=["user"])
 
@@ -12,5 +12,13 @@ async def set_user_role(
     user_role: SetUserRoleSchema,
     service: UserServiceDep,
     current_user=Depends(get_current_user),
-):
-    await service.set_user_role(user_role, current_user)
+) -> dict[str, str]:
+    return await service.set_user_role(user_role, current_user)
+
+
+@router.post("/get-me")
+async def get_me(
+    service: UserServiceDep,
+    current_user=Depends(get_current_user),
+) -> User:
+    return current_user

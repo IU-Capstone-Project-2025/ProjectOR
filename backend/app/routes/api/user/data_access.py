@@ -20,7 +20,6 @@ class UserDataAccess:
         await self.db_session.execute(
             update(User).where(User.username == username).values(role=role)
         )
-        await self.db_session.commit()
 
 
 UserDataAccessDep = Annotated[UserDataAccess, Depends(UserDataAccess)]

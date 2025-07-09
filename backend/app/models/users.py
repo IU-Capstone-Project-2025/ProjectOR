@@ -19,6 +19,6 @@ class User(base):
     hashed_password = Column(String, nullable=False)
     role = Column(
         PgEnum(UserRole, name="user_role_enum", create_type=True),
-        nullable=False,
+        nullable=True,
         default=UserRole.VIEWER,
     )

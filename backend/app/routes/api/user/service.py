@@ -24,6 +24,9 @@ class UserService:
                 detail="You cannot set the same role as your own.",
             )
         await self.user_repository.set_user_role(user.username, user_role.role)
+        return {
+            "message": f"User '{user.username}' role set to {user_role.role.value}."
+        }
 
 
 UserServiceDep = Annotated[UserService, Depends(UserService)]
