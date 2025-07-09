@@ -3,6 +3,8 @@ from pydantic_core._pydantic_core import ValidationError
 from dependencies.database import DBSessionDep
 from models import Project, Application, ProjectMember
 from sqlalchemy import select, update
+
+from routes.api.project.exceptions import ProjectNotFoundError
 from routes.api.project.schemas import (
     ProjectSchema,
     ApplicationSchema,
@@ -12,9 +14,6 @@ from routes.api.project.schemas import (
 )
 from fastapi import Depends
 
-
-class ProjectNotFoundError(Exception):
-    pass
 
 
 class ProjectsDataAccess:

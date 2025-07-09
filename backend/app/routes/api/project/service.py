@@ -3,6 +3,7 @@ from fastapi import Depends
 from fastapi.exceptions import HTTPException
 from models.users import UserRole
 from routes.api.project.data_access import ProjectsDataAccessDep
+from routes.api.project.exceptions import ProjectNotFoundError
 from routes.api.project.schemas import (
     ProjectSchema,
     NewProjectSchema,
@@ -117,11 +118,16 @@ class ProjectService:
                 status_code=403,
                 detail="You cannot approve your own application.",
             )
-        await self.data_access.approve_application(
-            project_id,
-            approve_schema,
-        )
-
+        try:
+            await self.data_access.approve_application(
+                project_id,
+                approve_schema,
+            )
+        except ProjectNotFoundError:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Application for user {approve_schema.user_id} not found in project {project_id}.",
+            )
         return await self.data_access.add_user_to_project(
             project_id,
             application.user_id,
