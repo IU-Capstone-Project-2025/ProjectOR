@@ -30,13 +30,13 @@ def upgrade() -> None:
         name="user_role_enum",
     )
     user_role.create(op.get_bind(), checkfirst=True)
-    op.add_column("users", sa.Column("level", sa.Integer(), nullable=False))
+    op.add_column("users", sa.Column("level", sa.Integer(), nullable=True))
     op.add_column(
         "users",
         sa.Column(
             "role",
             user_role,
-            nullable=False,
+            nullable=True,
         ),
     )
     # ### end Alembic commands ###

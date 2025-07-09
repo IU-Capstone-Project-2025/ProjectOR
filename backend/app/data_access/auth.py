@@ -4,7 +4,7 @@ from dependencies.database import DBSessionDep
 from sqlalchemy import select, insert
 from fastapi import Depends
 from schemas.user import UserInDB
-from models.users import User
+from models import User
 
 
 class UserDataAccess:

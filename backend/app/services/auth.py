@@ -89,7 +89,7 @@ class AuthService:
         access_token = self._create_token(user_data.username)
         return Token(access_token=access_token, token_type="bearer")
 
-    async def get_user_by_username(self, username: str) -> User:
+    async def get_user_by_username(self, username: str) -> UserInDB:
         user = await self.user_data_access.get_user_by_username(username)
         if not user:
             raise HTTPException(status_code=401, detail="User not found")

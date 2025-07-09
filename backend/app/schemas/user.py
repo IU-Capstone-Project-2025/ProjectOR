@@ -1,3 +1,5 @@
+from typing import Optional
+
 from models.users import UserRole
 from pydantic import BaseModel
 
@@ -14,6 +16,7 @@ class UserRegister(BaseModel):
 
 class UserInDB(User):
     hashed_password: str
+    id: Optional[int] = None
 
     class Config:
         from_attributes = True
