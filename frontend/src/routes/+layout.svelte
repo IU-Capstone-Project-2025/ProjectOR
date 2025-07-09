@@ -7,7 +7,7 @@
 	let { data, children } = $props();
 </script>
 
-<ModeWatcher defaultMode={'dark'} />
+<ModeWatcher defaultMode="dark" />
 <Toaster />
 <QueryClientProvider client={data.queryClient}>
 	{@render children()}
