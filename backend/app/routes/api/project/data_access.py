@@ -17,7 +17,7 @@ class ProjectNotFoundError(Exception):
     pass
 
 
-class ProjectsDataClass:
+class ProjectsDataAccess:
     def __init__(self, db_session: DBSessionDep):
         self.db_session = db_session
 
@@ -60,7 +60,6 @@ class ProjectsDataClass:
     ) -> ProjectSchema:
         project = Project(**project_data.model_dump())
         project.ceo_id = ceo_id
-        await self.db_session.flush()
         self.db_session.add(project)
         await self.db_session.flush()
         return ProjectSchema.model_validate(project)
@@ -134,4 +133,4 @@ class ProjectsDataClass:
         return ProjectMemberSchema.model_validate(project_member)
 
 
-ProjectsDataAccessDep = Annotated[ProjectsDataClass, Depends(ProjectsDataClass)]
+ProjectsDataAccessDep = Annotated[ProjectsDataAccess, Depends(ProjectsDataAccess)]

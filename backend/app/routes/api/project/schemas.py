@@ -30,10 +30,6 @@ class ApplicationSchema(BaseModel):
         from_attributes = True
 
 
-class ApplyProjectSchema(BaseModel):
-    project_id: int
-
-
 class ApproveApplicationSchema(BaseModel):
     is_approved: bool
     user_id: int

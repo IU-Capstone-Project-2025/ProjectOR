@@ -9,11 +9,11 @@ class Project(base):
     title = Column(String, unique=True, nullable=False)
     description = Column(String)
     created_at = Column(Date, default=func.current_date())
-    is_public = Column(Boolean, nullable=False)
+    is_public = Column(Boolean, nullable=True, default=True)
     status = Column(String)
-    ceo_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    is_opensource = Column(Boolean, nullable=False, default=True)
-    is_dead = Column(Boolean, nullable=False, default=False)
+    ceo_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    is_opensource = Column(Boolean, nullable=True, default=True)
+    is_dead = Column(Boolean, nullable=True, default=False)
 
     def __repr__(self):
         return f"<Project({', '.join(f'{k}={getattr(self, k)!r}' for k in self.__table__.columns.keys())})>"

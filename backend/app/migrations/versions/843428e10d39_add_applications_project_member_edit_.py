@@ -65,9 +65,9 @@ def upgrade() -> None:
         ["project_id", "user_id"],
         unique=False,
     )
-    op.add_column("projects", sa.Column("ceo_id", sa.Integer(), nullable=False))
-    op.add_column("projects", sa.Column("is_opensource", sa.Boolean(), nullable=False))
-    op.add_column("projects", sa.Column("is_dead", sa.Boolean(), nullable=False))
+    op.add_column("projects", sa.Column("ceo_id", sa.Integer(), nullable=True))
+    op.add_column("projects", sa.Column("is_opensource", sa.Boolean(), nullable=True))
+    op.add_column("projects", sa.Column("is_dead", sa.Boolean(), nullable=True))
     op.create_foreign_key(None, "projects", "users", ["ceo_id"], ["id"])
     # ### end Alembic commands ###
 
