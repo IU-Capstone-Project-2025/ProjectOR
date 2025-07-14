@@ -6,6 +6,7 @@ from sqlalchemy import (
     func,
     Boolean,
     ForeignKey,
+    Text,
     PrimaryKeyConstraint,
 )
 from dependencies.database import base
@@ -18,6 +19,7 @@ class Application(base):
     user_id = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=func.current_timestamp())
     is_approved = Column(Boolean, nullable=True)
+    feedback = Column(Text, nullable=True)
 
     __table_args__ = (
         Index("ix_applications_project_user", "project_id", "user_id", unique=True),

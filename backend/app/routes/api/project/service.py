@@ -1,3 +1,4 @@
+from email.message import Message
 from typing import Annotated
 from fastapi import Depends
 from fastapi.exceptions import HTTPException
@@ -9,6 +10,7 @@ from routes.api.project.schemas import (
     NewProjectSchema,
     ApplicationSchema,
     ApproveApplicationSchema,
+    MessageSchema
 )
 from schemas.user import UserInDB
 
@@ -29,9 +31,9 @@ class ProjectService:
         return await self.data_access.get_all_projects()
 
     async def create_project(
-        self,
-        project_data: NewProjectSchema,
-        user: UserInDB,
+            self,
+            project_data: NewProjectSchema,
+            user: UserInDB,
     ) -> ProjectSchema:
         if user.role != UserRole.FOUNDER:
             raise HTTPException(
@@ -47,10 +49,10 @@ class ProjectService:
         return await self.data_access.create_project(project_data, user.id)
 
     async def get_project_applications(
-        self,
-        project_id: int,
-        user_id: int = None,
-        only_new: bool = False,
+            self,
+            project_id: int,
+            user_id: int = None,
+            only_new: bool = False,
     ) -> list[ApplicationSchema]:
         project = await self.data_access.get_project_by_id(project_id, user_id)
         if project is None:
@@ -61,9 +63,9 @@ class ProjectService:
         return await self.data_access.get_project_applications(project_id, only_new)
 
     async def apply_to_project(
-        self,
-        project_id: int,
-        user_id: int,
+            self,
+            project_id: int,
+            user_id: int,
     ) -> ApplicationSchema:
         project = await self.data_access.get_project_by_id(project_id)
         if project is None:
@@ -87,10 +89,10 @@ class ProjectService:
         return await self.data_access.apply_to_project(project_id, user_id)
 
     async def approve_application(
-        self,
-        project_id: int,
-        user: UserInDB,
-        approve_schema: ApproveApplicationSchema,
+            self,
+            project_id: int,
+            user: UserInDB,
+            approve_schema: ApproveApplicationSchema,
     ) -> ApplicationSchema:
         project = await self.data_access.get_project_by_id(project_id)
         if project is None:
@@ -133,5 +135,48 @@ class ProjectService:
             application.user_id,
         )
 
+    async def delete_project(
+            self,
+            project_id: int,
+            user: UserInDB
+    ) -> MessageSchema:
+        project = await self.data_access.get_project_by_id(project_id)
+        if project is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Project with ID {project_id} not found."
+            )
+        if project.ceo_id != user.id:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Only the project CEO can delete."
+            )
+        await self.data_access.delete_project(project_id)
+        return MessageSchema(msg=f'Project {project_id} was successfully deleted')
+
+    async def get_applied_project(
+            self,
+            user: UserInDB
+    ) -> list[ApplicationSchema]:
+        return await self.data_access.get_applied_project(user.id)
+
+    async def cancel_application(
+            self,
+            project_id,
+            user: UserInDB
+    ) -> MessageSchema:
+        application = await self.data_access.get_application_by_user_and_project_id(project_id, user.id)
+        if application is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Application not found in project {project_id}.",
+            )
+        if application.is_approved:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Application was approved"
+            )
+        await self.data_access.cancel_application(project_id, user.id)
+        return MessageSchema(msg=f"Application was successfully deleted")
 
 ProjectServiceDep = Annotated[ProjectService, Depends(ProjectService)]

@@ -2,7 +2,7 @@ from typing import Annotated
 from pydantic_core._pydantic_core import ValidationError
 from dependencies.database import DBSessionDep
 from models import Project, Application, ProjectMember
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 
 from routes.api.project.exceptions import ApplicationNotFoundError
 from routes.api.project.schemas import (
@@ -110,7 +110,7 @@ class ProjectsDataAccess:
                 Application.project_id == project_id,
                 Application.user_id == approve_schema.user_id,
             )
-            .values(is_approved=approve_schema.is_approved)
+            .values(is_approved=approve_schema.is_approved, feedback=approve_schema.feedback)
             .returning(Application)
         )
         res = await self.db_session.execute(query)
@@ -130,6 +130,43 @@ class ProjectsDataAccess:
         self.db_session.add(project_member)
         await self.db_session.flush()
         return ProjectMemberSchema.model_validate(project_member)
+
+    async def delete_project(
+            self,
+            project_id: int
+    ):
+        query = (
+            delete(Project).where(Project.id == project_id)
+        )
+        await self.db_session.execute(query)
+        await self.db_session.commit()
+
+    async def get_applied_project(
+            self,
+            user_id: int
+    ) -> list[ApplicationSchema]:
+        query = (
+            select(Application).where(Application.user_id == user_id)
+        )
+        res = await self.db_session.execute(query)
+        applications = res.scalars().all()
+        return (
+            [ApplicationSchema.model_validate(application) for application in applications]
+            if applications
+            else []
+        )
+
+    async def cancel_application(
+            self,
+            project_id: int,
+            user_id: int
+    ):
+        query = (
+            delete(Application).where(Application.user_id == user_id, Application.project_id == project_id)
+        )
+        await self.db_session.execute(query)
+        await self.db_session.commit()
+
 
 
 ProjectsDataAccessDep = Annotated[ProjectsDataAccess, Depends(ProjectsDataAccess)]
