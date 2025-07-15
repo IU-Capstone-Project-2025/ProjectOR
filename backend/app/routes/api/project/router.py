@@ -7,7 +7,7 @@ from routes.api.project.schemas import (
     ApplicationSchema,
     ApproveApplicationSchema,
     ProjectMemberSchema,
-    MessageSchema,
+    ActionResponse,
 )
 from routes.api.project.service import ProjectServiceDep
 
@@ -85,10 +85,10 @@ async def approve_application(
 
 
 @router.delete("/{project_id}/applications/cancel")
-async def cancel_application(
+async def delete_application(
     project_id: int, service: ProjectServiceDep, user: AuthUserDep
-) -> MessageSchema:
-    return await service.cancel_application(project_id, user)
+) -> ActionResponse:
+    return await service.delete_application(project_id, user)
 
 
 @router.delete("/{project_id}")
@@ -96,5 +96,5 @@ async def delete_project(
     project_id: int,
     service: ProjectServiceDep,
     user: AuthUserDep,
-) -> MessageSchema:
+) -> ActionResponse:
     return await service.delete_project(project_id, user)

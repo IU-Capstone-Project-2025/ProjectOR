@@ -138,12 +138,11 @@ class ProjectsDataAccess:
             for application in applications
         ]
 
-    async def cancel_application(self, project_id: int, user_id: int) -> bool:
+    async def delete_application(self, project_id: int, user_id: int) -> bool:
         query = delete(Application).where(
             Application.user_id == user_id, Application.project_id == project_id
         )
         res = await self.db_session.execute(query)
         return res.rowcount > 0
-
 
 ProjectsDataAccessDep = Annotated[ProjectsDataAccess, Depends(ProjectsDataAccess)]

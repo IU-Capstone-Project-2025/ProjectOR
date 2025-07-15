@@ -20,10 +20,9 @@ class ProjectSchema(NewProjectSchema):
         from_attributes = True
 
 
-class MessageSchema(BaseModel):
-    msg: str
+class ActionResponse(BaseModel):
+    message : str
     success: bool
-
 
 class ApplicationSchema(BaseModel):
     project_id: int
