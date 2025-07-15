@@ -7,6 +7,7 @@ from routes.api.project.schemas import (
     ApplicationSchema,
     ApproveApplicationSchema,
     ProjectMemberSchema,
+    ActionResponse,
 )
 from routes.api.project.service import ProjectServiceDep
 
@@ -28,6 +29,13 @@ async def create_project(
     user: AuthUserDep,
 ) -> ProjectSchema:
     return await service.create_project(project_data, user)
+
+
+@router.get("/all-applications")
+async def get_user_applications(
+    user: AuthUserDep, service: ProjectServiceDep
+) -> list[ApplicationSchema]:
+    return await service.get_user_applications(user)
 
 
 @router.get("/{project_id}")
@@ -74,3 +82,19 @@ async def approve_application(
     user: AuthUserDep,
 ) -> ProjectMemberSchema:
     return await service.approve_application(project_id, user, approve_schema)
+
+
+@router.delete("/{project_id}/applications/cancel")
+async def delete_application(
+    project_id: int, service: ProjectServiceDep, user: AuthUserDep
+) -> ActionResponse:
+    return await service.delete_application(project_id, user)
+
+
+@router.delete("/{project_id}")
+async def delete_project(
+    project_id: int,
+    service: ProjectServiceDep,
+    user: AuthUserDep,
+) -> ActionResponse:
+    return await service.delete_project(project_id, user)
