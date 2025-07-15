@@ -19,8 +19,11 @@ class ProjectSchema(NewProjectSchema):
     class Config:
         from_attributes = True
 
+
 class MessageSchema(BaseModel):
     msg: str
+    success: bool
+
 
 class ApplicationSchema(BaseModel):
     project_id: int
@@ -37,6 +40,7 @@ class ApproveApplicationSchema(BaseModel):
     is_approved: bool
     user_id: int
     feedback: Optional[str]
+
 
 class ProjectMemberSchema(BaseModel):
     project_id: int

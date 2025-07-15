@@ -15,7 +15,6 @@ from routes.api.project.schemas import (
 from fastapi import Depends
 
 
-
 class ProjectsDataAccess:
     def __init__(self, db_session: DBSessionDep):
         self.db_session = db_session
@@ -46,11 +45,7 @@ class ProjectsDataAccess:
     async def get_all_projects(self) -> list[ProjectSchema]:
         res = await self.db_session.execute(select(Project))
         projects = res.scalars().all()
-        return (
-            [ProjectSchema.model_validate(project) for project in projects]
-            if projects
-            else []
-        )
+        return [ProjectSchema.model_validate(project) for project in projects]
 
     async def create_project(
         self,
@@ -73,11 +68,7 @@ class ProjectsDataAccess:
             query = query.where(Application.is_approved.is_(None))
         res = await self.db_session.execute(query)
         applications = res.scalars().all()
-        return (
-            [ApplicationSchema.model_validate(app) for app in applications]
-            if applications
-            else []
-        )
+        return [ApplicationSchema.model_validate(app) for app in applications]
 
     async def get_application_by_user_and_project_id(
         self, project_id: int, user_id: int
@@ -110,7 +101,9 @@ class ProjectsDataAccess:
                 Application.project_id == project_id,
                 Application.user_id == approve_schema.user_id,
             )
-            .values(is_approved=approve_schema.is_approved, feedback=approve_schema.feedback)
+            .values(
+                is_approved=approve_schema.is_approved, feedback=approve_schema.feedback
+            )
             .returning(Application)
         )
         res = await self.db_session.execute(query)
@@ -131,42 +124,26 @@ class ProjectsDataAccess:
         await self.db_session.flush()
         return ProjectMemberSchema.model_validate(project_member)
 
-    async def delete_project(
-            self,
-            project_id: int
-    ):
-        query = (
-            delete(Project).where(Project.id == project_id)
-        )
-        await self.db_session.execute(query)
-        await self.db_session.commit()
+    async def delete_project(self, project_id: int) -> bool:
+        query = delete(Project).where(Project.id == project_id)
+        res = await self.db_session.execute(query)
+        return res.rowcount > 0
 
-    async def get_applied_project(
-            self,
-            user_id: int
-    ) -> list[ApplicationSchema]:
-        query = (
-            select(Application).where(Application.user_id == user_id)
-        )
+    async def get_user_applications(self, user_id: int) -> list[ApplicationSchema]:
+        query = select(Application).where(Application.user_id == user_id)
         res = await self.db_session.execute(query)
         applications = res.scalars().all()
-        return (
-            [ApplicationSchema.model_validate(application) for application in applications]
-            if applications
-            else []
-        )
+        return [
+            ApplicationSchema.model_validate(application)
+            for application in applications
+        ]
 
-    async def cancel_application(
-            self,
-            project_id: int,
-            user_id: int
-    ):
-        query = (
-            delete(Application).where(Application.user_id == user_id, Application.project_id == project_id)
+    async def cancel_application(self, project_id: int, user_id: int) -> bool:
+        query = delete(Application).where(
+            Application.user_id == user_id, Application.project_id == project_id
         )
-        await self.db_session.execute(query)
-        await self.db_session.commit()
-
+        res = await self.db_session.execute(query)
+        return res.rowcount > 0
 
 
 ProjectsDataAccessDep = Annotated[ProjectsDataAccess, Depends(ProjectsDataAccess)]
