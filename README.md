@@ -22,3 +22,9 @@ Additionally, backend documentation can be found here:
 ```
 http://localhost:8000/docs
 ```
+
+## Stack
+This project uses JavaScript Svelte for frontend (UI + static), Python FastApi for backend, GithubActions + Render as CI/CD tools.
+
+## Deployment link
+https://projector-1.onrender.com
