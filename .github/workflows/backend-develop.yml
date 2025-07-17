@@ -34,6 +34,7 @@ jobs:
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           uv run pytest --maxfail=1 --disable-warnings -v
         working-directory: backend/app
