@@ -69,7 +69,6 @@ async def test_get_project_not_found(mock_service, mock_user):
         await get_project_by_id(
             project_id,
             mock_service,
-            mock_user,
         )
 
     assert exc_info.value.status_code == 404
