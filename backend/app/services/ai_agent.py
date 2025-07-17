@@ -12,7 +12,8 @@ class AiAgent:
         self.model = OpenAIModel(
             "gpt-4o-mini",
             provider=OpenAIProvider(
-                base_url="https://api.chatanywhere.tech/v1", api_key=settings.OPENAI_API_KEY
+                base_url="https://api.chatanywhere.tech/v1",
+                api_key=settings.OPENAI_API_KEY,
             ),
         )
 

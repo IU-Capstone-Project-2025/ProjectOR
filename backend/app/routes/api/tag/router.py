@@ -19,8 +19,3 @@ async def add_project_tags(
     project_id: int, service: TagServiceDep, user: AuthUserDep, tags: list[TagSchema]
 ) -> list[TagSchema]:
     return await service.add_project_tags(project_id, tags, user)
-
-
-@router.get("/{project_id}")
-async def get_project_tag(project_id: int, service: TagServiceDep) -> list[TagSchema]:
-    return await service.get_project_tag(project_id)

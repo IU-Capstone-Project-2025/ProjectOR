@@ -40,8 +40,5 @@ class TagService:
 
         return await self.tag_data_access.add_tags_to_project(project_id, tags)
 
-    async def get_project_tag(self, project_id: int) -> list[TagSchema] | None:
-        return await self.tag_data_access.get_project_tags(project_id)
-
 
 TagServiceDep = Annotated[TagService, Depends(TagService)]

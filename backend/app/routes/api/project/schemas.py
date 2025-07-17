@@ -16,6 +16,7 @@ class ProjectSchema(NewProjectSchema):
     id: int
     created_at: datetime
     ceo_id: Optional[int]
+    tags: Optional[list[str]] = None
 
     class Config:
         from_attributes = True
