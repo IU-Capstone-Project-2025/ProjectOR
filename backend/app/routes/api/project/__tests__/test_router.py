@@ -26,7 +26,8 @@ def sample_projects():
         ProjectSchema(
             id=1,
             title="Project 1",
-            description="Description 1",
+            brief_description="Description 1",
+            description=None,
             is_public=True,
             is_dead=False,
             is_opensource=True,
@@ -36,7 +37,8 @@ def sample_projects():
         ProjectSchema(
             id=2,
             title="Project 2",
-            description="Description 2",
+            brief_description="Description 2",
+            description=None,
             is_public=True,
             is_dead=False,
             is_opensource=True,
