@@ -7,7 +7,8 @@ class Project(base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     title = Column(String, unique=True, nullable=False)
-    description = Column(String)
+    description = Column(String, nullable=True)
+    brief_description = Column(String)
     created_at = Column(DateTime, default=func.current_timestamp())
     is_public = Column(Boolean, nullable=True, default=True)
     status = Column(String)

@@ -145,4 +145,5 @@ class ProjectsDataAccess:
         res = await self.db_session.execute(query)
         return res.rowcount > 0
 
+
 ProjectsDataAccessDep = Annotated[ProjectsDataAccess, Depends(ProjectsDataAccess)]

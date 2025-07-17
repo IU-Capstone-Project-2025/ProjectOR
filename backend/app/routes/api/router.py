@@ -3,6 +3,7 @@ from routes.api.health_check import router as health_check_router
 from routes.api.project import router as project_router
 from routes.api.auth import router as auth_router
 from routes.api.user import router as user_router
+from routes.api.tag import router as generator_router
 
 router = APIRouter(tags=["API"], prefix="/api")
 
@@ -11,5 +12,6 @@ for r in [
     project_router,
     auth_router,
     user_router,
+    generator_router,
 ]:
     router.include_router(r)

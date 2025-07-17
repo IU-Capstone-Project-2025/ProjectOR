@@ -42,7 +42,6 @@ async def get_user_applications(
 async def get_project_by_id(
     project_id: int,
     service: ProjectServiceDep,
-    user: AuthUserDep,
 ) -> ProjectSchema:
     return await service.get_project_by_id(project_id)
 

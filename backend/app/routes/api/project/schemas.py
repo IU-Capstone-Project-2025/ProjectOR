@@ -5,6 +5,7 @@ from typing import Optional
 
 class NewProjectSchema(BaseModel):
     title: str
+    brief_description: str
     description: Optional[str]
     is_public: Optional[bool]
     is_opensource: Optional[bool]
@@ -21,8 +22,9 @@ class ProjectSchema(NewProjectSchema):
 
 
 class ActionResponse(BaseModel):
-    message : str
+    message: str
     success: bool
+
 
 class ApplicationSchema(BaseModel):
     project_id: int
