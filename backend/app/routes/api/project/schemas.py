@@ -3,6 +3,13 @@ from datetime import datetime
 from typing import Optional
 
 
+class Tag(BaseModel):
+    name: str
+
+    class Config:
+        from_attributes = True
+
+
 class NewProjectSchema(BaseModel):
     title: str
     brief_description: str
@@ -16,7 +23,7 @@ class ProjectSchema(NewProjectSchema):
     id: int
     created_at: datetime
     ceo_id: Optional[int]
-    tags: Optional[list[str]] = None
+    tags: Optional[list[Tag]] = None
 
     class Config:
         from_attributes = True

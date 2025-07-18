@@ -1,6 +1,6 @@
 from routes.api.project.data_access import ProjectsDataAccessDep
 from services.ai_agent import AiAgentDep
-from schemas.agent_response import AgentResponseSchema
+from schemas.agent_response import GeneratedTagsResponse
 from fastapi import HTTPException, Depends
 from typing import Annotated
 from routes.api.tag.data_access import TagDataAccessDep
@@ -19,7 +19,7 @@ class TagService:
         self.ai_agent = ai_agent
         self.tag_data_access = tag_data_access
 
-    async def get_tags(self, project_id: int) -> AgentResponseSchema:
+    async def get_tags(self, project_id: int) -> GeneratedTagsResponse:
         project = await self.data_access.get_project_by_id(project_id)
         if project is None:
             raise HTTPException(status_code=404, detail="Project not found")

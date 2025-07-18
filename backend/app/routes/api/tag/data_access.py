@@ -13,31 +13,26 @@ class TagDataAccess:
     async def add_tags_to_project(
         self, project_id: int, tags: list[TagSchema]
     ) -> list[TagSchema]:
-        added_tags = []
+        query = (
+            insert(Tag)
+            .values([tag.model_dump() for tag in tags])
+            .on_conflict_do_nothing(index_elements=["name"])
+            .returning(Tag)
+        )
+        res = await self.db_session.execute(query)
 
-        for tag_data in tags:
-            query = (
-                insert(Tag)
-                .values(**tag_data.model_dump())
-                .on_conflict_do_nothing(index_elements=["name"])
-                .returning(Tag)
+        tags = res.scalars().all()
+
+        if tags:
+            stmt = (
+                insert(ProjectTag)
+                .values([{"project_id": project_id, "tag_id": tag.id} for tag in tags])
+                .on_conflict_do_nothing(index_elements=["project_id", "tag_id"])
             )
-            res = await self.db_session.execute(query)
 
-            tag_obj = res.scalar_one_or_none()
+            await self.db_session.execute(stmt)
 
-            if tag_obj:
-                stmt = (
-                    insert(ProjectTag)
-                    .values(project_id=project_id, tag_id=tag_obj.id)
-                    .on_conflict_do_nothing(index_elements=["project_id", "tag_id"])
-                )
-
-                await self.db_session.execute(stmt)
-
-                added_tags.append(TagSchema.model_validate(tag_obj))
-
-        return added_tags
+        return [TagSchema.model_validate(tag) for tag in tags]
 
 
 TagDataAccessDep = Annotated[TagDataAccess, Depends(TagDataAccess)]

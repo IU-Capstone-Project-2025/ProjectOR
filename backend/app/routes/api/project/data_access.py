@@ -37,9 +37,7 @@ class ProjectsDataAccess:
         if project is None:
             return None
 
-        return ProjectSchema.model_validate(
-            {**project.__dict__, "tags": [tag.name for tag in project.tags]}
-        )
+        return ProjectSchema.model_validate(project)
 
     async def get_project_by_title(self, title: str) -> ProjectSchema | None:
         res = await self.db_session.execute(
@@ -54,21 +52,14 @@ class ProjectsDataAccess:
         if project is None:
             return None
 
-        return ProjectSchema.model_validate(
-            {**project.__dict__, "tags": [tag.name for tag in project.tags]}
-        )
+        return ProjectSchema.model_validate(project)
 
     async def get_all_projects(self) -> list[ProjectSchema]:
         res = await self.db_session.execute(
             select(Project).options(joinedload(Project.tags))
         )
         projects = res.unique().scalars().all()
-        return [
-            ProjectSchema.model_validate(
-                {**project.__dict__, "tags": [tag.name for tag in project.tags]}
-            )
-            for project in projects
-        ]
+        return [ProjectSchema.model_validate(project) for project in projects]
 
     async def create_project(
         self,
