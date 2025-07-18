@@ -166,7 +166,12 @@ class ProjectService:
         if application.is_approved:
             raise HTTPException(status_code=400, detail="Application was approved")
         res = await self.data_access.detele_application(project_id, user.id)
-        msg = "Application was successfully deleted" if res else "Failed to delete application"
+        msg = (
+            "Application was successfully deleted"
+            if res
+            else "Failed to delete application"
+        )
         return ActionResponse(message=msg, success=res)
+
 
 ProjectServiceDep = Annotated[ProjectService, Depends(ProjectService)]

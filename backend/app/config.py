@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int
     POSTGRES_DB: str
     JWT_SECRET_KEY: str
+    OPENAI_API_KEY: str
 
     class Config:
         env_file = ".env"

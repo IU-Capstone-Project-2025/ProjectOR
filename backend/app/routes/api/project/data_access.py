@@ -3,6 +3,7 @@ from pydantic_core._pydantic_core import ValidationError
 from dependencies.database import DBSessionDep
 from models import Project, Application, ProjectMember
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import joinedload
 
 from routes.api.project.exceptions import ApplicationNotFoundError
 from routes.api.project.schemas import (
@@ -22,29 +23,42 @@ class ProjectsDataAccess:
     async def get_project_by_id(
         self, project_id: int, ceo_id: int = None
     ) -> ProjectSchema | None:
-        query = select(Project).where(Project.id == project_id)
+        query = (
+            select(Project)
+            .where(Project.id == project_id)
+            .options(joinedload(Project.tags))
+        )
         if ceo_id is not None:
             query = query.where(Project.ceo_id == ceo_id)
+
         res = await self.db_session.execute(query)
-        project = res.scalars().first()
-        try:
-            return ProjectSchema.model_validate(project)
-        except ValidationError as e:
+        project = res.unique().scalar_one_or_none()
+
+        if project is None:
             return None
+
+        return ProjectSchema.model_validate(project)
 
     async def get_project_by_title(self, title: str) -> ProjectSchema | None:
         res = await self.db_session.execute(
-            select(Project).where(Project.title == title)
+            (
+                select(Project)
+                .where(Project.title == title)
+                .options(joinedload(Project.tags))
+            )
         )
-        project = res.scalars().first()
-        try:
-            return ProjectSchema.model_validate(project)
-        except ValidationError as e:
+        project = res.unique().scalar_one_or_none()
+
+        if project is None:
             return None
 
+        return ProjectSchema.model_validate(project)
+
     async def get_all_projects(self) -> list[ProjectSchema]:
-        res = await self.db_session.execute(select(Project))
-        projects = res.scalars().all()
+        res = await self.db_session.execute(
+            select(Project).options(joinedload(Project.tags))
+        )
+        projects = res.unique().scalars().all()
         return [ProjectSchema.model_validate(project) for project in projects]
 
     async def create_project(
@@ -144,5 +158,6 @@ class ProjectsDataAccess:
         )
         res = await self.db_session.execute(query)
         return res.rowcount > 0
+
 
 ProjectsDataAccessDep = Annotated[ProjectsDataAccess, Depends(ProjectsDataAccess)]
