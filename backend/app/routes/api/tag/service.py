@@ -19,7 +19,7 @@ class TagService:
         self.ai_agent = ai_agent
         self.tag_data_access = tag_data_access
 
-    async def get_tags(self, project_id: int) -> GeneratedTagsResponse:
+    async def get_generated_tags(self, project_id: int) -> GeneratedTagsResponse:
         project = await self.data_access.get_project_by_id(project_id)
         if project is None:
             raise HTTPException(status_code=404, detail="Project not found")
@@ -27,7 +27,7 @@ class TagService:
 
         return result
 
-    async def add_project_tags(
+    async def add_tags_to_project(
         self, project_id: int, tags: list[TagSchema], user: UserInDB
     ) -> list[TagSchema]:
         project = await self.data_access.get_project_by_id(project_id)

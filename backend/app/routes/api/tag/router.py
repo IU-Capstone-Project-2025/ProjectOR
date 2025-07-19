@@ -11,11 +11,11 @@ router = APIRouter(prefix="/tags", tags=["tags"])
 async def get_tags_by_description(
     project_id: int, service: TagServiceDep
 ) -> GeneratedTagsResponse:
-    return await service.get_tags(project_id)
+    return await service.get_generated_tags(project_id)
 
 
 @router.post("/add/{project_id}")
 async def add_project_tags(
     project_id: int, service: TagServiceDep, user: AuthUserDep, tags: list[TagSchema]
 ) -> list[TagSchema]:
-    return await service.add_project_tags(project_id, tags, user)
+    return await service.add_tags_to_project(project_id, tags, user)

@@ -4,6 +4,7 @@ from typing import Annotated
 from sqlalchemy import select, update
 from models import User
 from models.users import UserRole
+from routes.api.user.schemas import GetUserSchema
 
 
 class UserDataAccess:
@@ -20,6 +21,11 @@ class UserDataAccess:
         await self.db_session.execute(
             update(User).where(User.username == username).values(role=role)
         )
+
+    async def get_users_by_ids(self, users_ids: list[int]) -> list[GetUserSchema]:
+        res = await self.db_session.execute(select(User).where(User.id.in_(users_ids)))
+        users = res.scalars().all()
+        return [GetUserSchema.model_validate(user) for user in users]
 
 
 UserDataAccessDep = Annotated[UserDataAccess, Depends(UserDataAccess)]

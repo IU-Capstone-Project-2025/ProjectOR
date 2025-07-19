@@ -1,9 +1,8 @@
 from typing import Annotated
 from fastapi import Depends, HTTPException
-
 from models.users import UserRole
 from routes.api.user.data_access import UserDataAccessDep, UserDataAccess
-from routes.api.user.schemas import SetUserRoleSchema
+from routes.api.user.schemas import SetUserRoleSchema, GetUserSchema
 from schemas.user import User
 
 
@@ -27,6 +26,14 @@ class UserService:
         return {
             "message": f"User '{user.username}' role set to {user_role.role.value}."
         }
+
+    async def get_users_by_ids(self, users_ids: list[int]) -> list[GetUserSchema]:
+        users = await self.user_repository.get_users_by_ids(users_ids)
+        if not users:
+            raise HTTPException(
+                status_code=404, detail="No users found with the provided IDs."
+            )
+        return users
 
 
 UserServiceDep = Annotated[UserService, Depends(UserService)]
