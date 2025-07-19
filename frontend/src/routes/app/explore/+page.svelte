@@ -9,20 +9,17 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Search, Filter, Grid3X3, List } from '@lucide/svelte';
 	import { type components } from '@/api/v1';
+	import { Checkbox } from '@/components/ui/checkbox';
 
 	type Project = components['schemas']['ProjectSchema'];
 
 	let searchTerm = $state('');
-	let showPublicOnly = $state(false);
-	let viewMode = $state<'grid' | 'list'>('grid');
+	let showGraveyardOnly = $state(false);
+	let viewMode: 'grid' | 'list' = $state('grid');
 
 	const projectsQuery = createQuery({
 		queryKey: ['projects'],
 		queryFn: async () => await getProjects()
-	});
-
-	$effect(() => {
-		// You can add search logic here if needed
 	});
 
 	const filteredProjects = $derived(() => {
@@ -38,8 +35,8 @@
 			);
 		}
 
-		if (showPublicOnly) {
-			filtered = filtered.filter((project: Project) => project.is_public);
+		if (showGraveyardOnly) {
+			filtered = filtered.filter((project: Project) => project.is_dead);
 		}
 
 		return filtered;
@@ -85,8 +82,8 @@
 				</div>
 				<div class="flex items-center gap-4">
 					<label class="flex items-center gap-2 text-sm">
-						<input type="checkbox" bind:checked={showPublicOnly} class="rounded" />
-						Public only
+						<Checkbox bind:checked={showGraveyardOnly} />
+						Graveyard only
 					</label>
 					<Button variant="outline" size="sm">
 						<Filter class="mr-2 h-4 w-4" />
@@ -132,7 +129,7 @@
 						variant="outline"
 						onclick={() => {
 							searchTerm = '';
-							showPublicOnly = false;
+							showGraveyardOnly = false;
 						}}
 					>
 						Clear filters

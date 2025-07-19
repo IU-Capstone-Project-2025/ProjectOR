@@ -59,12 +59,13 @@
 				<Input bind:value={name} id="name-{id}" class="col-span-3" />
 			</div>
 			<div class="grid grid-cols-4 items-center gap-4">
-				<Label for="username-{id}" class="text-right">Description</Label>
+				<Label for="username-{id}" class="text-right">Brief Description</Label>
 				<Textarea
 					bind:value={description}
 					id="username-{id}"
 					class="col-span-3 max-h-40"
 					placeholder="Enter a brief description of the project"
+					maxlength={100}
 				/>
 			</div>
 			<div class="grid grid-cols-4 items-center gap-4">
@@ -83,7 +84,17 @@
 			</div>
 		</div>
 		<Dialog.Footer>
-			<Button type="submit" disabled={!name || !description || $createProjectMutation.isPending}>
+			<Button
+				type="submit"
+				disabled={!name || !description || $createProjectMutation.isPending}
+				onclick={() =>
+					$createProjectMutation.mutate({
+						title: name,
+						description,
+						isOpensource,
+						isDead
+					})}
+			>
 				{#if $createProjectMutation.isPending}
 					<LoaderCircle class="animate-spin" />
 					Loading...

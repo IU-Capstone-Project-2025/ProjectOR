@@ -70,6 +70,7 @@ class ProjectsDataAccess:
         project.ceo_id = ceo_id
         self.db_session.add(project)
         await self.db_session.flush()
+        await self.db_session.refresh(project, ["tags"])
         return ProjectSchema.model_validate(project)
 
     async def get_project_applications(
@@ -158,6 +159,21 @@ class ProjectsDataAccess:
         )
         res = await self.db_session.execute(query)
         return res.rowcount > 0
+
+    async def update_project(
+        self, project_id: int, brief_description: str, description: str | None = None
+    ) -> ProjectSchema:
+        query = (
+            update(Project)
+            .where(Project.id == project_id)
+            .values(brief_description=brief_description, description=description)
+            .returning(Project)
+        )
+        res = await self.db_session.execute(query)
+        project = res.scalars().first()
+        if not project:
+            raise ValueError(f"Project with ID {project_id} not found.")
+        return ProjectSchema.model_validate(project)
 
 
 ProjectsDataAccessDep = Annotated[ProjectsDataAccess, Depends(ProjectsDataAccess)]

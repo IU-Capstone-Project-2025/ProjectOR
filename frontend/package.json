@@ -65,6 +65,7 @@
 		"@tanstack/svelte-query": "^5.81.2",
 		"cobe": "^0.6.4",
 		"jwt-decode": "^4.0.0",
-		"openapi-fetch": "^0.14.0"
+		"openapi-fetch": "^0.14.0",
+		"svelte-markdown": "^0.4.1"
 	}
 }

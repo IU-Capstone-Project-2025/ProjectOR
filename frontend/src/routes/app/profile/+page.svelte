@@ -5,6 +5,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import * as Card from '$lib/components/ui/card';
 	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
 	import { userState } from '@/api/user.svelte';
@@ -18,10 +19,16 @@
 		X,
 		Camera,
 		Key,
-		Shield,
-		Bell
+		Bell,
+		Contact
 	} from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
+	import { getMe } from './(components)/dataLoaders';
+	import { createQuery } from '@tanstack/svelte-query';
+	import { Checkbox } from '@/components/ui/checkbox';
+	import { USER_ROLES } from '@/constants/userRoles';
+	import { Skeleton } from '@/components/ui/skeleton';
+	import ChooseRoleDialog from '../(components)/ChooseRoleDialog.svelte';
 
 	let isEditing = $state(false);
 	let editedProfile = $state({
@@ -31,6 +38,7 @@
 		location: '',
 		website: ''
 	});
+	let isChooseRoleDialogOpen = $state(false);
 
 	function handleEdit() {
 		isEditing = true;
@@ -67,8 +75,14 @@
 			day: 'numeric'
 		});
 	}
+
+	const meQuery = createQuery({
+		queryKey: ['me'],
+		queryFn: async () => await getMe()
+	});
 </script>
 
+<ChooseRoleDialog bind:open={isChooseRoleDialogOpen} dismissable />
 <div class="container mx-auto max-w-4xl space-y-6 px-4 py-6">
 	<!-- Header -->
 	<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -88,15 +102,15 @@
 		<!-- Profile Card -->
 		<div class="lg:col-span-1">
 			<Card.Root>
-				<Card.Content class="p-6 text-center">
+				<Card.Content class="text-center">
 					<div class="relative mb-4">
 						<Avatar.Root class="mx-auto h-24 w-24">
-							<Avatar.Image
-								src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face"
-								alt="Profile"
-							/>
 							<Avatar.Fallback class="text-lg">
-								{userState.user?.username?.[0]?.toUpperCase() || 'U'}
+								{#if !$meQuery.data}
+									{userState.user?.username?.[0]?.toUpperCase() || 'U'}
+								{:else}
+									{$meQuery.data.username.slice(0, 2).toUpperCase()}
+								{/if}
 							</Avatar.Fallback>
 						</Avatar.Root>
 						{#if isEditing}
@@ -113,15 +127,30 @@
 					<h2 class="mb-1 text-xl font-semibold">
 						{userState.user?.username || 'Username'}
 					</h2>
-					<p class="text-muted-foreground mb-4 text-sm">
-						{editedProfile.email || 'email@example.com'}
-					</p>
 
-					<Badge variant="secondary" class="mb-4">
-						<Shield class="mr-1 h-3 w-3" />
-						Active User
-					</Badge>
+					<!--					<Badge variant="secondary" class="mb-4">-->
+					<!--						<Shield class="mr-1 h-3 w-3" />-->
+					<!--						Active User-->
+					<!--					</Badge>-->
+					{#if !$meQuery.data}
+						<Skeleton class="mb-2 h-4 w-24" />
+					{:else}
+						{@const role = USER_ROLES[$meQuery.data.role ?? 'VIEWER']}
 
+						<Tooltip.Provider>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									<Badge variant="secondary" class="mb-8">
+										<role.icon />
+										{role.label}
+									</Badge>
+								</Tooltip.Trigger>
+								<Tooltip.Content>
+									<p>{role.description}</p>
+								</Tooltip.Content>
+							</Tooltip.Root>
+						</Tooltip.Provider>
+					{/if}
 					<div class="text-muted-foreground flex items-center justify-center gap-1 text-xs">
 						<Calendar class="h-3 w-3" />
 						<span>Joined {formatDate(new Date())}</span>
@@ -130,7 +159,18 @@
 			</Card.Root>
 
 			<!-- Quick Stats -->
-			<Card.Root class="mt-4">
+			<div class="flex items-center justify-center px-2 py-4">
+				<Button
+					class="w-full"
+					onclick={() => {
+						isChooseRoleDialogOpen = true;
+					}}
+				>
+					<Contact />
+					Change Role
+				</Button>
+			</div>
+			<Card.Root>
 				<Card.Header>
 					<Card.Title class="text-sm">Quick Stats</Card.Title>
 				</Card.Header>
@@ -276,7 +316,7 @@
 							</Label>
 							<p class="text-muted-foreground text-sm">Update your account password</p>
 						</div>
-						<Button variant="outline" size="sm">Change</Button>
+						<Button variant="outline" size="sm" disabled>Change</Button>
 					</div>
 
 					<Separator />
@@ -289,7 +329,7 @@
 							</Label>
 							<p class="text-muted-foreground text-sm">Receive notifications about your projects</p>
 						</div>
-						<input type="checkbox" checked class="rounded" />
+						<Checkbox checked class="rounded" disabled />
 					</div>
 
 					<Separator />
@@ -304,7 +344,7 @@
 								Permanently delete your account and all data
 							</p>
 						</div>
-						<Button variant="destructive" size="sm">Delete</Button>
+						<Button variant="destructive" size="sm" disabled>Delete</Button>
 					</div>
 				</Card.Content>
 			</Card.Root>

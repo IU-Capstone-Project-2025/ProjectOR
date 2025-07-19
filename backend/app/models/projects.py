@@ -16,7 +16,9 @@ class Project(base):
     ceo_id = Column(Integer, ForeignKey("users.id"), nullable=True, server_default="1")
     is_opensource = Column(Boolean, nullable=True, default=True, server_default="TRUE")
     is_dead = Column(Boolean, nullable=True, default=False, server_default="FALSE")
-    tags = relationship("Tag", secondary="project_tags", back_populates="projects")
+    tags = relationship(
+        "Tag", secondary="project_tags", back_populates="projects", lazy="selectin"
+    )
 
     def __repr__(self):
         return f"<Project({', '.join(f'{k}={getattr(self, k)!r}' for k in self.__table__.columns.keys())})>"

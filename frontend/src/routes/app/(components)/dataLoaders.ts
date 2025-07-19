@@ -3,14 +3,15 @@ import type { components } from '@/api/v1';
 
 export const createProject = async (
 	title: string,
-	description: string,
+	brief_description: string,
 	isOpensource: boolean,
 	isDead: boolean
 ) => {
 	const { data, error } = await client.POST('/api/projects/', {
 		body: {
 			title,
-			description,
+			brief_description,
+			description: '',
 			is_public: true,
 			is_opensource: isOpensource,
 			is_dead: isDead

@@ -57,3 +57,8 @@ class ProjectMemberSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UpdateProjectRequest(BaseModel):
+    brief_description: str
+    description: Optional[str] = None

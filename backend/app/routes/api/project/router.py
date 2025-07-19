@@ -8,6 +8,7 @@ from routes.api.project.schemas import (
     ApproveApplicationSchema,
     ProjectMemberSchema,
     ActionResponse,
+    UpdateProjectRequest,
 )
 from routes.api.project.service import ProjectServiceDep
 
@@ -97,3 +98,13 @@ async def delete_project(
     user: AuthUserDep,
 ) -> ActionResponse:
     return await service.delete_project(project_id, user)
+
+
+@router.post("/{project_id}/update")
+async def update_project(
+    project_id: int,
+    data: UpdateProjectRequest,
+    service: ProjectServiceDep,
+    user: AuthUserDep,
+) -> ProjectSchema:
+    return await service.update_project(project_id, data, user)

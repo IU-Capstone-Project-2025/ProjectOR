@@ -1,8 +1,6 @@
-from email.message import Message
 from typing import Annotated
 from fastapi import Depends
 from fastapi.exceptions import HTTPException
-from pyexpat.errors import messages
 
 from models.users import UserRole
 from routes.api.project.data_access import ProjectsDataAccessDep
@@ -13,6 +11,7 @@ from routes.api.project.schemas import (
     ApplicationSchema,
     ApproveApplicationSchema,
     ActionResponse,
+    UpdateProjectRequest,
 )
 from schemas.user import UserInDB
 
@@ -145,7 +144,7 @@ class ProjectService:
             )
         if project.ceo_id != user.id:
             raise HTTPException(
-                status_code=403, detail=f"Only the project CEO can delete."
+                status_code=403, detail="Only the project CEO can delete."
             )
         res = await self.data_access.delete_project(project_id)
         msg = "Project was successfully deleted" if res else "Project not found"
@@ -172,6 +171,25 @@ class ProjectService:
             else "Failed to delete application"
         )
         return ActionResponse(message=msg, success=res)
+
+    async def update_project(
+        self,
+        project_id: int,
+        data: UpdateProjectRequest,
+        user: UserInDB,
+    ) -> ProjectSchema:
+        project = await self.data_access.get_project_by_id(project_id)
+        if project is None:
+            raise HTTPException(
+                status_code=404, detail=f"Project with ID {project_id} not found."
+            )
+        if project.ceo_id != user.id:
+            raise HTTPException(
+                status_code=403, detail="Only the project CEO can update the project."
+            )
+        return await self.data_access.update_project(
+            project_id, data.brief_description, data.description
+        )
 
 
 ProjectServiceDep = Annotated[ProjectService, Depends(ProjectService)]
