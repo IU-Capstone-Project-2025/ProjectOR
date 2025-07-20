@@ -9,6 +9,7 @@
 	import { toast } from 'svelte-sonner';
 	import { createProject } from './dataLoaders';
 	import { LoaderCircle } from '@lucide/svelte';
+	import { goto } from '$app/navigation';
 
 	let name = $state('');
 	let description = $state('');
@@ -32,7 +33,7 @@
 			isOpensource: boolean;
 			isDead: boolean;
 		}) => await createProject(title, description, isOpensource, isDead),
-		onSuccess: () => {
+		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ['projects'] });
 			toast.success('Project created successfully');
 			open = false;
@@ -40,6 +41,9 @@
 			description = '';
 			isOpensource = false;
 			isDead = false;
+			goto(`/app/projects/${data.id}`, {
+				replaceState: true
+			});
 		},
 		onError: (error) => {
 			toast.error(`Failed to create project: ${error.message}`);

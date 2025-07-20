@@ -22,3 +22,12 @@ async def get_me(
     current_user=Depends(get_current_user),
 ) -> User:
     return current_user
+
+
+@router.get("/get-by-id/{user_id}")
+async def get_user_by_id(
+    user_id: int,
+    service: UserServiceDep,
+    current_user=Depends(get_current_user),
+) -> User:
+    return await service.get_user_by_id(user_id, current_user)

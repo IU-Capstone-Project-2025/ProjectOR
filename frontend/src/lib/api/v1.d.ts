@@ -244,6 +244,23 @@ export interface paths {
 		patch?: never;
 		trace?: never;
 	};
+	'/api/user/get-by-id/{user_id}': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Get User By Id */
+		get: operations['get_user_by_id_api_user_get_by_id__user_id__get'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 	'/api/tags/generate/{project_id}': {
 		parameters: {
 			query?: never;
@@ -273,6 +290,23 @@ export interface paths {
 		/** Add Project Tags */
 		post: operations['add_project_tags_api_tags_add__project_id__post'];
 		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/tags/remove/{project_id}': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		post?: never;
+		/** Remove Project Tags */
+		delete: operations['remove_project_tags_api_tags_remove__project_id__delete'];
 		options?: never;
 		head?: never;
 		patch?: never;
@@ -336,6 +370,16 @@ export interface components {
 		GeneratedTagsResponse: {
 			/** Tags */
 			tags: string[];
+		};
+		/** GenericResponse */
+		GenericResponse: {
+			/**
+			 * Success
+			 * @default true
+			 */
+			success: boolean;
+			/** Message */
+			message?: string | null;
 		};
 		/** HTTPValidationError */
 		HTTPValidationError: {
@@ -926,6 +970,37 @@ export interface operations {
 			};
 		};
 	};
+	get_user_by_id_api_user_get_by_id__user_id__get: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				user_id: number;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful Response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['User'];
+				};
+			};
+			/** @description Validation Error */
+			422: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HTTPValidationError'];
+				};
+			};
+		};
+	};
 	get_tags_by_description_api_tags_generate__project_id__get: {
 		parameters: {
 			query?: never;
@@ -979,6 +1054,41 @@ export interface operations {
 				};
 				content: {
 					'application/json': components['schemas']['TagSchema'][];
+				};
+			};
+			/** @description Validation Error */
+			422: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HTTPValidationError'];
+				};
+			};
+		};
+	};
+	remove_project_tags_api_tags_remove__project_id__delete: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				project_id: number;
+			};
+			cookie?: never;
+		};
+		requestBody: {
+			content: {
+				'application/json': components['schemas']['TagSchema'][];
+			};
+		};
+		responses: {
+			/** @description Successful Response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['GenericResponse'];
 				};
 			};
 			/** @description Validation Error */

@@ -23,7 +23,7 @@ class AiAgent:
         tag_generator_agent = Agent(
             self.model,
             output_type=GeneratedTagsResponse,
-            system_prompt=f"You need to come up with a name for a tag based on the project description. You should provide 15 options. Write tags in English only",
+            system_prompt=f"You need to come up with a name for a tag based on the project description. Write tags in English only",
         )
 
         result = await tag_generator_agent.run(user_prompt=project_description)

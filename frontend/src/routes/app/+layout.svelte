@@ -42,7 +42,7 @@
 		<div class="flex w-full items-center justify-between gap-1 px-4 lg:gap-2 lg:px-6">
 			<a href="/app">
 				<div class="flex items-center gap-2">
-					<img src={projector_logo} alt="ProjectOR Logo" class="h-8 w-8 rounded-full" />
+					<img src={projector_logo} alt="ProjectOR Logo" class="h-8 w-8 rounded-full dark:invert" />
 					<h1 class="text-base font-medium">
 						{PAGE_HEADERS[page.url.pathname] || 'ProjectOR'}
 					</h1>
@@ -53,9 +53,9 @@
 					<Plus />
 					Create Project
 				</Button>
-				<Button variant="outline">
+				<Button variant="outline" onclick={() => goto('/app/applications')}>
 					<SquareChartGantt />
-					My Projects
+					Applications
 				</Button>
 				<DropdownMenu.Root>
 					<DropdownMenu.Trigger>

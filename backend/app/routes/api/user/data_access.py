@@ -16,6 +16,10 @@ class UserDataAccess:
         )
         return res.scalars().first()
 
+    async def get_user_by_id(self, user_id: int) -> User | None:
+        res = await self.db_session.execute(select(User).where(User.id == user_id))
+        return res.scalars().first()
+
     async def set_user_role(self, username: str, role: UserRole) -> None:
         await self.db_session.execute(
             update(User).where(User.username == username).values(role=role)

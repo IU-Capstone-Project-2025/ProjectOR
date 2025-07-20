@@ -8,7 +8,15 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
-	import { getProjectById, updateProject } from '../(components)/dataLoaders';
+	import {
+		getProjectById,
+		updateProject,
+		generateTags,
+		addProjectTags,
+		removeProjectTags,
+		applyToProject,
+		getUserById
+	} from '../(components)/dataLoaders';
 	import { goto } from '$app/navigation';
 	import {
 		ArrowLeft,
@@ -26,10 +34,17 @@
 		Save,
 		LoaderCircle,
 		FileText,
-		OctagonX
+		OctagonX,
+		WandSparkles,
+		Users
 	} from '@lucide/svelte';
 	import Markdown from '$lib/components/md/Markdown.svelte';
 	import { toast } from 'svelte-sonner';
+	import { TagsInput } from '$lib/components/ui/tags-input';
+	import type { components } from '@/api/v1';
+	import RainbowButton from '@/components/RainbowButton.svelte';
+	import { Skeleton } from '@/components/ui/skeleton';
+	import ProjectContributors from '../(components)/ProjectContributors.svelte';
 
 	let { data } = $props();
 	let isEditing = $state(false);
@@ -43,6 +58,8 @@
 		editDescription: '',
 		editBriefDescription: ''
 	});
+	let editTags: string[] = $state([]);
+	let showContributorsDialog = $state(false);
 
 	const queryClient = useQueryClient();
 
@@ -66,6 +83,31 @@
 		}
 	}
 
+	const handleSave = (project: components['schemas']['ProjectSchema']) => {
+		if (!editBriefDescription || !editDescription) {
+			toast.error('Please fill in all fields before saving.');
+			return;
+		}
+		if (
+			editBriefDescription === project.brief_description &&
+			editDescription === project.description &&
+			JSON.stringify(editTags) === JSON.stringify(project.tags?.map((tag) => tag.name) || [])
+		) {
+			isEditing = false;
+			return;
+		}
+		$updateProjectMutation.mutate();
+		let tagsToAdd = editTags.filter((tag) => !project.tags?.some((t) => t.name === tag));
+		let tagsToRemove =
+			project.tags?.filter((t) => !editTags.includes(t.name)).map((t) => t.name) || [];
+		if (tagsToAdd.length > 0) {
+			$addProjectTagsMutation.mutate({ projectId, tags: tagsToAdd });
+		}
+		if (tagsToRemove.length > 0) {
+			$removeProjectTagsMutation.mutate({ projectId, tags: tagsToRemove });
+		}
+	};
+
 	const updateProjectMutation = createMutation({
 		mutationFn: async () => await updateProject(projectId, editBriefDescription, editDescription),
 		onSuccess: () => {
@@ -77,6 +119,68 @@
 			console.error('Error updating project:', error);
 			toast.error(`Failed to update project: ${error.message}`);
 		}
+	});
+
+	const generateTagsMutation = createMutation({
+		mutationFn: async (projectId: number) => await generateTags(projectId),
+		onSuccess: (data) => {
+			for (const tag of data.tags) {
+				if (!editTags.includes(tag)) {
+					editTags.push(tag);
+				}
+			}
+			toast.success('Tags generated successfully');
+		},
+		onError: (error) => {
+			console.error('Error generating tags:', error);
+			toast.error(`Failed to generate tags: ${error.message}`);
+		}
+	});
+
+	const addProjectTagsMutation = createMutation({
+		mutationFn: async ({ projectId, tags }: { projectId: number; tags: string[] }) =>
+			await addProjectTags(projectId, tags),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+			toast.success('Tags added successfully');
+		},
+		onError: (error) => {
+			console.error('Error adding tags:', error);
+			toast.error(`Failed to add tags: ${error.message}`);
+		}
+	});
+
+	const removeProjectTagsMutation = createMutation({
+		mutationFn: async ({ projectId, tags }: { projectId: number; tags: string[] }) =>
+			await removeProjectTags(projectId, tags),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+			toast.success('Tags removed successfully');
+		},
+		onError: (error) => {
+			console.error('Error removing tags:', error);
+			toast.error(`Failed to remove tags: ${error.message}`);
+		}
+	});
+
+	const applyToProjectMutation = createMutation({
+		mutationFn: async (projectId: number) => await applyToProject(projectId),
+		onSuccess: () => {
+			toast.success('Application submitted successfully');
+		},
+		onError: (error) => {
+			console.error('Error applying to project:', error);
+			toast.error(`Failed to apply to project: ${error.message}`);
+		}
+	});
+
+	const projectOwnerQuery = createQuery({
+		queryKey: ['projectOwner', data.projectId],
+		queryFn: async () => {
+			if (!$projectQuery.data?.ceo_id) return null;
+			return await getUserById($projectQuery.data.ceo_id);
+		},
+		enabled: !!$projectQuery.data?.ceo_id
 	});
 </script>
 
@@ -131,7 +235,6 @@
 										{/if}
 									</div>
 								</div>
-								<p class="text-muted-foreground">Project ID: #{project.id}</p>
 							</div>
 							<div class="flex items-center gap-2">
 								{#if !isEditing}
@@ -163,6 +266,7 @@
 										onclick={() => {
 											editDescription = project.description || '';
 											editBriefDescription = project.brief_description || '';
+											editTags = project.tags?.map((tag) => tag.name) || [];
 											isEditing = !isEditing;
 										}}
 									>
@@ -178,9 +282,12 @@
 										<Button
 											size="sm"
 											variant="default"
-											onclick={() => $updateProjectMutation.mutate()}
+											onclick={() => handleSave(project)}
+											disabled={$updateProjectMutation.isPending ||
+												$addProjectTagsMutation.isPending ||
+												$removeProjectTagsMutation.isPending}
 										>
-											{#if $updateProjectMutation.isPending}
+											{#if $updateProjectMutation.isPending || $addProjectTagsMutation.isPending || $removeProjectTagsMutation.isPending}
 												<LoaderCircle class="animate-spin" />
 												Saving...
 											{:else}
@@ -192,6 +299,30 @@
 								{/if}
 							</div>
 						</div>
+						<div class="flex w-full flex-row flex-wrap gap-2">
+							{#if !isEditing}
+								{#each project.tags ?? [] as tag (tag.name)}
+									<Badge variant="default" class="shrink-0">
+										{tag.name}
+									</Badge>
+								{/each}
+							{:else}
+								<TagsInput bind:value={editTags} placeholder="Add a tag" />
+								<RainbowButton
+									onclick={() => $generateTagsMutation.mutate(project.id)}
+									disabled={$generateTagsMutation.isPending}
+									class="h-8"
+								>
+									{#if $generateTagsMutation.isPending}
+										<LoaderCircle class="animate-spin" />
+										Generating...
+									{:else}
+										<WandSparkles class="size-4" />
+										Generate
+									{/if}
+								</RainbowButton>
+							{/if}
+						</div>
 
 						<Separator />
 
@@ -199,7 +330,11 @@
 						<div class="text-muted-foreground flex items-center gap-6 text-sm">
 							<div class="flex items-center gap-1">
 								<User class="h-4 w-4" />
-								<span>Project Owner</span>
+								{#if !$projectOwnerQuery.data}
+									<Skeleton class="h-4 w-24" />
+								{:else}
+									<span>{$projectOwnerQuery.data.username}</span>
+								{/if}
 							</div>
 							<div class="flex items-center gap-1">
 								<Calendar class="h-4 w-4" />
@@ -249,8 +384,8 @@
 										<div class="text-muted-foreground text-sm">Raised</div>
 									</div>
 									<div class="bg-muted rounded-lg p-4 text-center">
-										<div class="text-2xl font-bold">7</div>
-										<div class="text-muted-foreground text-sm">Branches</div>
+										<div class="text-2xl font-bold">2025</div>
+										<div class="text-muted-foreground text-sm">Founded</div>
 									</div>
 								</div>
 							</div>
@@ -331,7 +466,6 @@
 						</Button>
 					</Card.Content>
 				</Card.Root>
-
 				<!-- Contributors -->
 				<Card.Root>
 					<Card.Header>
@@ -339,15 +473,19 @@
 					</Card.Header>
 					<Card.Content class="space-y-3">
 						<div class="flex items-center gap-3">
-							<div
-								class="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
-							>
-								U
-							</div>
-							<div class="min-w-0 flex-1">
-								<div class="text-sm font-medium">John Doe</div>
-								<div class="text-muted-foreground text-xs">Owner</div>
-							</div>
+							{#if !$projectOwnerQuery.data}
+								<Skeleton class="h-8 w-24" />
+							{:else}
+								<div
+									class="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
+								>
+									{$projectOwnerQuery.data.username.slice(0, 1).toUpperCase()}
+								</div>
+								<div class="min-w-0 flex-1">
+									<div class="text-sm font-medium">{$projectOwnerQuery.data.username}</div>
+									<div class="text-muted-foreground text-xs">Owner</div>
+								</div>
+							{/if}
 						</div>
 						<div class="flex items-center gap-3">
 							<div
@@ -372,10 +510,27 @@
 							</div>
 						</div>
 						<Card.Footer class="pt-2">
-							<Button variant="default" size="sm" class="w-full justify-center">
-								<MailPlus />
-								Apply to Contribute
-							</Button>
+							{#if project.ceo_id === data.user?.id}
+								<Button
+									variant="default"
+									size="sm"
+									class="w-full justify-center"
+									onclick={() => (showContributorsDialog = true)}
+								>
+									<Users class="mr-2 h-4 w-4" />
+									Manage Applications
+								</Button>
+							{:else}
+								<Button
+									variant="default"
+									size="sm"
+									class="w-full justify-center"
+									onclick={() => $applyToProjectMutation.mutate(project.id)}
+								>
+									<MailPlus />
+									Apply to Contribute
+								</Button>
+							{/if}
 						</Card.Footer>
 					</Card.Content>
 				</Card.Root>
@@ -402,5 +557,10 @@
 				</Card.Root>
 			</div>
 		</div>
+
+		<!-- Contributors Dialog -->
+		{#if showContributorsDialog}
+			<ProjectContributors {projectId} bind:open={showContributorsDialog} />
+		{/if}
 	{/if}
 </div>

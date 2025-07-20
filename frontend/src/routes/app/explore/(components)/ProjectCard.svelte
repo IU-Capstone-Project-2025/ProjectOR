@@ -75,9 +75,16 @@
 					<span>{formatDate(project.created_at)}</span>
 				</div>
 			</div>
+			<div class="no-scrollbar flex w-full flex-row gap-2 overflow-x-auto">
+				{#each project.tags ?? [] as tag (tag.name)}
+					<Badge variant="default" class="shrink-0">
+						{tag.name}
+					</Badge>
+				{/each}
+			</div>
 		</Card.Content>
 
-		<Card.Footer class="pt-4">
+		<Card.Footer>
 			<Button
 				variant="default"
 				size="sm"
@@ -98,7 +105,7 @@
 		class="group cursor-pointer transition-all duration-200 hover:shadow-md"
 		onclick={handleViewProject}
 	>
-		<Card.Content class="p-6">
+		<Card.Content>
 			<div class="flex items-center justify-between">
 				<div class="min-w-0 flex-1">
 					<div class="mb-2 flex items-center gap-3">
@@ -124,7 +131,7 @@
 						</div>
 					</div>
 					<p class="text-muted-foreground mb-3 line-clamp-2 text-sm">
-						{project.description || 'No description available.'}
+						{project.brief_description || 'No description available.'}
 					</p>
 					<div class="text-muted-foreground flex items-center gap-4 text-xs">
 						<!--						<div class="flex items-center gap-1">-->
@@ -135,6 +142,13 @@
 							<Calendar class="h-3 w-3" />
 							<span>{formatDate(project.created_at)}</span>
 						</div>
+					</div>
+					<div class="no-scrollbar flex w-full flex-row gap-2 overflow-x-auto pt-2">
+						{#each project.tags ?? [] as tag (tag.name)}
+							<Badge variant="default" class="shrink-0">
+								{tag.name}
+							</Badge>
+						{/each}
 					</div>
 				</div>
 				<div class="ml-4 flex items-center gap-2">
