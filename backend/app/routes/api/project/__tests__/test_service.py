@@ -19,7 +19,7 @@ def project_service(mock_data_access):
 
 @pytest.fixture
 def user():
-    return User(username="testuser", role="VIEWER")
+    return User(username="testuser", role="VIEWER", id=1)
 
 
 @pytest.fixture
