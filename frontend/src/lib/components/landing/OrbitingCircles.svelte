@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { cn } from '$lib/utils';
 
-	let className: any = '';
+	let className: string = '';
 	export { className as class };
 	export let reverse: boolean = false;
 	export let duration: number = 20;

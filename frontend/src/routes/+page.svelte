@@ -2,7 +2,6 @@
 	import { Button } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
 	import { Badge } from '@/components/ui/badge';
-	import placeholder from '@/assets/placeholder.svg';
 	import {
 		Lightbulb,
 		Code,
@@ -86,13 +85,6 @@
 					</div>
 					<div class="flex items-center justify-center">
 						<div class="relative">
-							<!--							<img-->
-							<!--								src={placeholder}-->
-							<!--								width="600"-->
-							<!--								height="400"-->
-							<!--								alt="Platform Dashboard"-->
-							<!--								class="aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"-->
-							<!--							/>-->
 							<GlobeCard />
 							<div
 								class="from-background/20 absolute inset-0 rounded-xl bg-gradient-to-t to-transparent"

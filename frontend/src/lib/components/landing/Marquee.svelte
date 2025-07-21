@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { cn } from '$lib/utils';
+
 	export let pauseOnHover: boolean = false;
 	export let vertical: boolean = false;
 	export let repeat: number = 4;
@@ -19,6 +20,7 @@
 		className
 	)}
 >
+	<!--	eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 	{#each { length: repeat } as _, i (i)}
 		<div
 			class={cn('flex shrink-0 justify-around [gap:var(--gap)]', {
