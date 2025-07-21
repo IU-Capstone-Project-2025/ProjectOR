@@ -30,5 +30,18 @@ class AiAgent:
 
         return result.output
 
+    async def enhance_project_description(
+        self, project_description: str
+    ) -> str:
+        description_enhancer_agent = Agent(
+            self.model,
+            output_type=str,
+            system_prompt=f"You need to enhance the given project description. Write in English only. Use markdown syntax for formatting.",
+        )
+
+        result = await description_enhancer_agent.run(user_prompt=project_description)
+
+        return result.output
+
 
 AiAgentDep = Annotated[AiAgent, Depends(AiAgent)]

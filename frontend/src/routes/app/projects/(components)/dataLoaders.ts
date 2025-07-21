@@ -138,3 +138,16 @@ export const approveApplication = async (
 
 	return data;
 };
+
+export const enhanceProjectDescription = async (description: string) => {
+	const { data, error } = await client.POST('/api/projects/enhance-description', {
+		body: { project_description: description }
+	});
+
+	if (error || !data) {
+		console.error('Error enhancing project description:', error);
+		throw new Error(JSON.stringify(error?.detail ?? 'Failed to enhance project description'));
+	}
+
+	return data;
+};

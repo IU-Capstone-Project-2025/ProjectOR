@@ -62,3 +62,10 @@ class ProjectMemberSchema(BaseModel):
 class UpdateProjectRequest(BaseModel):
     brief_description: str
     description: Optional[str] = None
+
+
+class EnhanceDescriptionRequest(BaseModel):
+    project_description: str
+
+class EnhanceDescriptionResponse(BaseModel):
+    enhanced_description: str

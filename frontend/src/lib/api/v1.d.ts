@@ -176,6 +176,23 @@ export interface paths {
 		patch?: never;
 		trace?: never;
 	};
+	'/api/projects/enhance-description': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Enhance Project Description */
+		post: operations['enhance_project_description_api_projects_enhance_description_post'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 	'/api/auth/token': {
 		parameters: {
 			query?: never;
@@ -365,6 +382,16 @@ export interface components {
 			client_id?: string | null;
 			/** Client Secret */
 			client_secret?: string | null;
+		};
+		/** EnhanceDescriptionRequest */
+		EnhanceDescriptionRequest: {
+			/** Project Description */
+			project_description: string;
+		};
+		/** EnhanceDescriptionResponse */
+		EnhanceDescriptionResponse: {
+			/** Enhanced Description */
+			enhanced_description: string;
 		};
 		/** GeneratedTagsResponse */
 		GeneratedTagsResponse: {
@@ -836,6 +863,39 @@ export interface operations {
 				};
 				content: {
 					'application/json': components['schemas']['ProjectSchema'];
+				};
+			};
+			/** @description Validation Error */
+			422: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HTTPValidationError'];
+				};
+			};
+		};
+	};
+	enhance_project_description_api_projects_enhance_description_post: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody: {
+			content: {
+				'application/json': components['schemas']['EnhanceDescriptionRequest'];
+			};
+		};
+		responses: {
+			/** @description Successful Response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['EnhanceDescriptionResponse'];
 				};
 			};
 			/** @description Validation Error */

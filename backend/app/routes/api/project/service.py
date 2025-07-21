@@ -12,13 +12,17 @@ from routes.api.project.schemas import (
     ApproveApplicationSchema,
     ActionResponse,
     UpdateProjectRequest,
+    EnhanceDescriptionResponse,
+    EnhanceDescriptionRequest,
 )
 from schemas.user import UserInDB
+from services.ai_agent import AiAgentDep
 
 
 class ProjectService:
-    def __init__(self, data_access: ProjectsDataAccessDep):
+    def __init__(self, data_access: ProjectsDataAccessDep, ai_agent: AiAgentDep):
         self.data_access = data_access
+        self.ai_agent = ai_agent
 
     async def get_project_by_id(self, project_id: int) -> ProjectSchema:
         data = await self.data_access.get_project_by_id(project_id)
@@ -189,6 +193,14 @@ class ProjectService:
             )
         return await self.data_access.update_project(
             project_id, data.brief_description, data.description
+        )
+
+    async def enhance_project_description(
+        self, data: EnhanceDescriptionRequest,
+    ) -> EnhanceDescriptionResponse:
+        res = await self.ai_agent.enhance_project_description(data.project_description)
+        return EnhanceDescriptionResponse(
+            enhanced_description=res
         )
 
 

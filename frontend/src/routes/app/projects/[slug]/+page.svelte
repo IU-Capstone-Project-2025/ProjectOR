@@ -15,7 +15,8 @@
 		addProjectTags,
 		removeProjectTags,
 		applyToProject,
-		getUserById
+		getUserById,
+		enhanceProjectDescription
 	} from '../(components)/dataLoaders';
 	import { goto } from '$app/navigation';
 	import {
@@ -181,6 +182,18 @@
 			return await getUserById($projectQuery.data.ceo_id);
 		},
 		enabled: !!$projectQuery.data?.ceo_id
+	});
+
+	const enhanceDescriptionMutation = createMutation({
+		mutationFn: async (description: string) => await enhanceProjectDescription(description),
+		onSuccess: (data) => {
+			editDescription = data.enhanced_description;
+			toast.success('✨ Description enhanced successfully');
+		},
+		onError: (error) => {
+			console.error('Error enhancing description:', error);
+			toast.error(`Failed to enhance description: ${error.message}`);
+		}
 	});
 </script>
 
@@ -403,6 +416,19 @@
 					</Card.Header>
 					<Card.Content>
 						{#if isEditing}
+							<RainbowButton
+								onclick={() => $enhanceDescriptionMutation.mutate(editDescription)}
+								disabled={$enhanceDescriptionMutation.isPending || !editDescription}
+								class="mb-4 h-8"
+							>
+								{#if $enhanceDescriptionMutation.isPending}
+									<LoaderCircle class="animate-spin" />
+									Generating...
+								{:else}
+									<WandSparkles class="size-4" />
+									Enhance Description
+								{/if}
+							</RainbowButton>
 							<Tabs.Root value="edit" class="w-full">
 								<Tabs.List>
 									<Tabs.Trigger value="edit">Edit</Tabs.Trigger>
@@ -413,6 +439,7 @@
 										bind:value={editDescription}
 										placeholder="Enter detailed project description"
 										class="h-64"
+										disabled={$enhanceDescriptionMutation.isPending}
 									/>
 								</Tabs.Content>
 								<Tabs.Content value="preview">

@@ -7,14 +7,25 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import * as Card from '$lib/components/ui/card';
-	import { Search, Filter, Grid3X3, List } from '@lucide/svelte';
-	import { type components } from '@/api/v1';
-	import { Checkbox } from '@/components/ui/checkbox';
+	import * as Popover from '$lib/components/ui/popover';
+	import * as Command from '$lib/components/ui/command';
+	import { Search, Filter, Grid3X3, List, ChevronsUpDownIcon, CheckIcon } from '@lucide/svelte';
+	import { type components } from '$lib/api/v1';
+	import { Checkbox } from '$lib/components/ui/checkbox';
+	import { Label } from '$lib/components/ui/label';
+	import { slide } from 'svelte/transition';
+	import { cn } from '$lib/utils';
+	import { Badge } from '@/components/ui/badge';
 
 	type Project = components['schemas']['ProjectSchema'];
 
+	const { data } = $props();
+
+	let showFilters = $state(false);
 	let searchTerm = $state('');
 	let showGraveyardOnly = $state(false);
+	let myProjectsOnly = $state(false);
+	let selectedTags: string[] = $state([]);
 	let viewMode: 'grid' | 'list' = $state('grid');
 
 	const projectsQuery = createQuery({
@@ -37,6 +48,16 @@
 
 		if (showGraveyardOnly) {
 			filtered = filtered.filter((project: Project) => project.is_dead);
+		}
+
+		if (myProjectsOnly) {
+			filtered = filtered.filter((project: Project) => project.ceo_id === data.user?.id);
+		}
+
+		if (selectedTags.length > 0) {
+			filtered = filtered.filter((project: Project) =>
+				project.tags?.some((tag) => selectedTags.includes(tag.name))
+			);
 		}
 
 		return filtered;
@@ -82,15 +103,90 @@
 				</div>
 				<div class="flex items-center gap-4">
 					<label class="flex items-center gap-2 text-sm">
-						<Checkbox bind:checked={showGraveyardOnly} />
-						Graveyard only
+						<Checkbox bind:checked={myProjectsOnly} />
+						My Projects Only
 					</label>
-					<Button variant="outline" size="sm">
+					<Button variant="outline" size="sm" onclick={() => (showFilters = !showFilters)}>
 						<Filter class="mr-2 h-4 w-4" />
 						Filters
 					</Button>
 				</div>
 			</div>
+			{#if showFilters}
+				<div class="space-y-4" transition:slide={{ duration: 300 }}>
+					<div class="items center flex gap-2">
+						<Checkbox bind:checked={showGraveyardOnly} />
+						<Label>Show Graveyard Projects</Label>
+					</div>
+					<div class="flex items-center gap-2">
+						<Popover.Root>
+							<Popover.Trigger>
+								{#snippet child({ props })}
+									<Button
+										{...props}
+										variant="outline"
+										role="combobox"
+										class="no-scrollbar w-full overflow-x-scroll"
+									>
+										{#if selectedTags.length > 0}
+											{#each selectedTags as tag (tag)}
+												<Badge variant="outline">{tag}</Badge>
+											{/each}
+										{:else}
+											Select tags
+										{/if}
+										<ChevronsUpDownIcon class="opacity-50" />
+									</Button>
+								{/snippet}
+							</Popover.Trigger>
+							<Popover.Content class="w-full" align="start">
+								<Command.Root>
+									<Command.Input placeholder="Search tags..." />
+									<Command.List>
+										<Command.Empty>No tags found.</Command.Empty>
+										<Command.Group value="tags">
+											{#if $projectsQuery.data}
+												{#each $projectsQuery.data
+													.map((project) => project.tags ?? [])
+													.flat()
+													.filter((tag, index, self) => self.indexOf(tag) === index)
+													.sort((a, b) => a.name.localeCompare(b.name)) as tag (tag)}
+													<Command.Item
+														value={tag.name}
+														onSelect={() => {
+															if (selectedTags.includes(tag.name)) {
+																selectedTags = selectedTags.filter((t) => t !== tag.name);
+															} else {
+																selectedTags = [...selectedTags, tag.name];
+															}
+														}}
+													>
+														<CheckIcon
+															class={cn(!selectedTags.includes(tag.name) && 'text-transparent')}
+														/>
+														{tag.name}
+													</Command.Item>
+												{/each}
+											{/if}
+										</Command.Group>
+									</Command.List>
+								</Command.Root>
+							</Popover.Content>
+						</Popover.Root>
+					</div>
+					<Button
+						variant="outline"
+						onclick={() => {
+							searchTerm = '';
+							showGraveyardOnly = false;
+							selectedTags = [];
+							myProjectsOnly = false;
+						}}
+					>
+						Clear filters
+					</Button>
+				</div>
+			{/if}
 		</Card.Root>
 	</div>
 
@@ -130,6 +226,8 @@
 						onclick={() => {
 							searchTerm = '';
 							showGraveyardOnly = false;
+							selectedTags = [];
+							myProjectsOnly = false;
 						}}
 					>
 						Clear filters

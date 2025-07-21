@@ -9,6 +9,8 @@ from routes.api.project.schemas import (
     ProjectMemberSchema,
     ActionResponse,
     UpdateProjectRequest,
+    EnhanceDescriptionRequest,
+    EnhanceDescriptionResponse,
 )
 from routes.api.project.service import ProjectServiceDep
 
@@ -108,3 +110,11 @@ async def update_project(
     user: AuthUserDep,
 ) -> ProjectSchema:
     return await service.update_project(project_id, data, user)
+
+@router.post('/enhance-description')
+async def enhance_project_description(
+    data: EnhanceDescriptionRequest,
+    service: ProjectServiceDep,
+    user: AuthUserDep,
+) -> EnhanceDescriptionResponse:
+    return await service.enhance_project_description(data)
