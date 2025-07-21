@@ -23,10 +23,23 @@ class AiAgent:
         tag_generator_agent = Agent(
             self.model,
             output_type=GeneratedTagsResponse,
-            system_prompt=f"You need to come up with a name for a tag based on the project description. You should provide 15 options. Write tags in English only",
+            system_prompt=f"You need to come up with a name for a tag based on the project description. Write tags in English only",
         )
 
         result = await tag_generator_agent.run(user_prompt=project_description)
+
+        return result.output
+
+    async def enhance_project_description(
+        self, project_description: str
+    ) -> str:
+        description_enhancer_agent = Agent(
+            self.model,
+            output_type=str,
+            system_prompt=f"You need to enhance the given project description. Write in English only. Use markdown syntax for formatting.",
+        )
+
+        result = await description_enhancer_agent.run(user_prompt=project_description)
 
         return result.output
 

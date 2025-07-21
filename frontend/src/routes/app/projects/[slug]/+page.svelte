@@ -1,27 +1,69 @@
 <script lang="ts">
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import * as Card from '$lib/components/ui/card';
+	import * as Tabs from '$lib/components/ui/tabs';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
+	import { Input } from '$lib/components/ui/input';
+	import { Textarea } from '$lib/components/ui/textarea';
 	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
-	import { getProjectById } from '../(components)/dataLoaders';
+	import {
+		getProjectById,
+		updateProject,
+		generateTags,
+		addProjectTags,
+		removeProjectTags,
+		applyToProject,
+		getUserById,
+		enhanceProjectDescription
+	} from '../(components)/dataLoaders';
 	import { goto } from '$app/navigation';
 	import {
 		ArrowLeft,
 		Globe,
-		Lock,
 		Calendar,
 		User,
 		Edit3,
 		Share2,
 		Bookmark,
-		GitBranch,
+		Github,
+		Send,
+		MailPlus,
+		X,
 		Code,
-		FileText
+		Save,
+		LoaderCircle,
+		FileText,
+		OctagonX,
+		WandSparkles,
+		Users
 	} from '@lucide/svelte';
+	import Markdown from '$lib/components/md/Markdown.svelte';
+	import { toast } from 'svelte-sonner';
+	import { TagsInput } from '$lib/components/ui/tags-input';
+	import type { components } from '@/api/v1';
+	import RainbowButton from '@/components/RainbowButton.svelte';
+	import { Skeleton } from '@/components/ui/skeleton';
+	import ProjectContributors from '../(components)/ProjectContributors.svelte';
 
 	let { data } = $props();
+	let isEditing = $state(false);
+	let {
+		editDescription,
+		editBriefDescription
+	}: {
+		editDescription: string;
+		editBriefDescription: string;
+	} = $state({
+		editDescription: '',
+		editBriefDescription: ''
+	});
+	let editTags: string[] = $state([]);
+	let showContributorsDialog = $state(false);
+
+	const queryClient = useQueryClient();
+
 	const projectId = data.projectId;
 
 	const projectQuery = createQuery({
@@ -41,6 +83,118 @@
 			return 'Recently';
 		}
 	}
+
+	const handleSave = (project: components['schemas']['ProjectSchema']) => {
+		if (!editBriefDescription || !editDescription) {
+			toast.error('Please fill in all fields before saving.');
+			return;
+		}
+		if (
+			editBriefDescription === project.brief_description &&
+			editDescription === project.description &&
+			JSON.stringify(editTags) === JSON.stringify(project.tags?.map((tag) => tag.name) || [])
+		) {
+			isEditing = false;
+			return;
+		}
+		$updateProjectMutation.mutate();
+		let tagsToAdd = editTags.filter((tag) => !project.tags?.some((t) => t.name === tag));
+		let tagsToRemove =
+			project.tags?.filter((t) => !editTags.includes(t.name)).map((t) => t.name) || [];
+		if (tagsToAdd.length > 0) {
+			$addProjectTagsMutation.mutate({ projectId, tags: tagsToAdd });
+		}
+		if (tagsToRemove.length > 0) {
+			$removeProjectTagsMutation.mutate({ projectId, tags: tagsToRemove });
+		}
+	};
+
+	const updateProjectMutation = createMutation({
+		mutationFn: async () => await updateProject(projectId, editBriefDescription, editDescription),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+			isEditing = false;
+			toast.success('Project updated successfully');
+		},
+		onError: (error) => {
+			console.error('Error updating project:', error);
+			toast.error(`Failed to update project: ${error.message}`);
+		}
+	});
+
+	const generateTagsMutation = createMutation({
+		mutationFn: async (projectId: number) => await generateTags(projectId),
+		onSuccess: (data) => {
+			for (const tag of data.tags) {
+				if (!editTags.includes(tag)) {
+					editTags.push(tag);
+				}
+			}
+			toast.success('Tags generated successfully');
+		},
+		onError: (error) => {
+			console.error('Error generating tags:', error);
+			toast.error(`Failed to generate tags: ${error.message}`);
+		}
+	});
+
+	const addProjectTagsMutation = createMutation({
+		mutationFn: async ({ projectId, tags }: { projectId: number; tags: string[] }) =>
+			await addProjectTags(projectId, tags),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+			toast.success('Tags added successfully');
+		},
+		onError: (error) => {
+			console.error('Error adding tags:', error);
+			toast.error(`Failed to add tags: ${error.message}`);
+		}
+	});
+
+	const removeProjectTagsMutation = createMutation({
+		mutationFn: async ({ projectId, tags }: { projectId: number; tags: string[] }) =>
+			await removeProjectTags(projectId, tags),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+			toast.success('Tags removed successfully');
+		},
+		onError: (error) => {
+			console.error('Error removing tags:', error);
+			toast.error(`Failed to remove tags: ${error.message}`);
+		}
+	});
+
+	const applyToProjectMutation = createMutation({
+		mutationFn: async (projectId: number) => await applyToProject(projectId),
+		onSuccess: () => {
+			toast.success('Application submitted successfully');
+		},
+		onError: (error) => {
+			console.error('Error applying to project:', error);
+			toast.error(`Failed to apply to project: ${error.message}`);
+		}
+	});
+
+	const projectOwnerQuery = createQuery({
+		queryKey: ['projectOwner', data.projectId],
+		queryFn: async () => {
+			if (!$projectQuery.data?.ceo_id) return null;
+			return await getUserById($projectQuery.data.ceo_id);
+		},
+		enabled: !!$projectQuery.data?.ceo_id
+	});
+
+	const enhanceDescriptionMutation = createMutation({
+		mutationFn: async (description: string) => await enhanceProjectDescription(description),
+		onSuccess: (data) => {
+			editDescription = data.enhanced_description;
+			toast.success('✨ Description enhanced successfully');
+		},
+		onError: (error) => {
+			console.error('Error enhancing description:', error);
+			toast.error(`Failed to enhance description: ${error.message}`);
+		}
+	});
 </script>
 
 <div class="container mx-auto max-w-6xl space-y-6 px-4 py-6">
@@ -73,32 +227,114 @@
 							<div class="space-y-2">
 								<div class="flex items-center gap-3">
 									<h1 class="text-3xl font-bold tracking-tight">{project.title}</h1>
-									<Badge variant={project.is_public ? 'secondary' : 'outline'}>
-										{#if project.is_public}
-											<Globe class="mr-1 h-3 w-3" />
-											Public
-										{:else}
-											<Lock class="mr-1 h-3 w-3" />
-											Private
+									<div class="flex flex-row gap-2">
+										<Badge
+											variant={project.is_dead ? 'secondary' : 'outline'}
+											class="ml-2 shrink-0"
+										>
+											{#if project.is_dead}
+												<OctagonX />
+												Graveyard
+											{:else}
+												<Globe class="mr-1 h-3 w-3" />
+												Public
+											{/if}
+										</Badge>
+										{#if project.is_opensource}
+											<Badge variant="outline" class="shrink-0">
+												<Code class="mr-1 h-3 w-3" />
+												Open Source
+											</Badge>
 										{/if}
-									</Badge>
+									</div>
 								</div>
-								<p class="text-muted-foreground">Project ID: #{project.id}</p>
 							</div>
 							<div class="flex items-center gap-2">
-								<Button size="sm">
-									<Bookmark class="mr-2 h-4 w-4" />
-									Bookmark
-								</Button>
-								<Button size="sm" variant="outline">
-									<Share2 class="mr-2 h-4 w-4" />
-									Share
-								</Button>
-								<Button size="sm" variant="outline">
-									<Edit3 class="mr-2 h-4 w-4" />
-									Edit
-								</Button>
+								{#if !isEditing}
+									<Button size="sm">
+										<Bookmark class="mr-2 h-4 w-4" />
+										Bookmark
+									</Button>
+									<Button
+										size="sm"
+										variant="outline"
+										onclick={() => {
+											navigator
+												.share({
+													title: project.title,
+													text: project.brief_description || 'Check out this project!',
+													url: window.location.href
+												})
+												.catch((err) => console.error('Error sharing:', err));
+										}}
+									>
+										<Share2 class="mr-2 h-4 w-4" />
+										Share
+									</Button>
+								{/if}
+								{#if project.ceo_id === data.user?.id}
+									<Button
+										size="sm"
+										variant="outline"
+										onclick={() => {
+											editDescription = project.description || '';
+											editBriefDescription = project.brief_description || '';
+											editTags = project.tags?.map((tag) => tag.name) || [];
+											isEditing = !isEditing;
+										}}
+									>
+										{#if isEditing}
+											<X class="mr-2 h-4 w-4" />
+											Cancel
+										{:else}
+											<Edit3 class="mr-2 h-4 w-4" />
+											Edit
+										{/if}
+									</Button>
+									{#if isEditing}
+										<Button
+											size="sm"
+											variant="default"
+											onclick={() => handleSave(project)}
+											disabled={$updateProjectMutation.isPending ||
+												$addProjectTagsMutation.isPending ||
+												$removeProjectTagsMutation.isPending}
+										>
+											{#if $updateProjectMutation.isPending || $addProjectTagsMutation.isPending || $removeProjectTagsMutation.isPending}
+												<LoaderCircle class="animate-spin" />
+												Saving...
+											{:else}
+												<Save class="mr-2 h-4 w-4" />
+												Save Changes
+											{/if}
+										</Button>
+									{/if}
+								{/if}
 							</div>
+						</div>
+						<div class="flex w-full flex-row flex-wrap gap-2">
+							{#if !isEditing}
+								{#each project.tags ?? [] as tag (tag.name)}
+									<Badge variant="default" class="shrink-0">
+										{tag.name}
+									</Badge>
+								{/each}
+							{:else}
+								<TagsInput bind:value={editTags} placeholder="Add a tag" />
+								<RainbowButton
+									onclick={() => $generateTagsMutation.mutate(project.id)}
+									disabled={$generateTagsMutation.isPending}
+									class="h-8"
+								>
+									{#if $generateTagsMutation.isPending}
+										<LoaderCircle class="animate-spin" />
+										Generating...
+									{:else}
+										<WandSparkles class="size-4" />
+										Generate
+									{/if}
+								</RainbowButton>
+							{/if}
 						</div>
 
 						<Separator />
@@ -107,11 +343,15 @@
 						<div class="text-muted-foreground flex items-center gap-6 text-sm">
 							<div class="flex items-center gap-1">
 								<User class="h-4 w-4" />
-								<span>Project Owner</span>
+								{#if !$projectOwnerQuery.data}
+									<Skeleton class="h-4 w-24" />
+								{:else}
+									<span>{$projectOwnerQuery.data.username}</span>
+								{/if}
 							</div>
 							<div class="flex items-center gap-1">
 								<Calendar class="h-4 w-4" />
-								<span>Created {formatDate()}</span>
+								<span>Created {formatDate(project.created_at)}</span>
 							</div>
 							<div class="flex items-center gap-1">
 								<Calendar class="h-4 w-4" />
@@ -125,9 +365,17 @@
 							<!-- Description -->
 							<div>
 								<h2 class="mb-3 text-lg font-semibold">About this project</h2>
-								<p class="text-muted-foreground leading-relaxed">
-									{project.description || 'No description provided for this project.'}
-								</p>
+								{#if isEditing}
+									<Input
+										bind:value={editBriefDescription}
+										placeholder="Enter a brief description of the project"
+										class="mb-2"
+									/>
+								{:else}
+									<p class="text-muted-foreground leading-relaxed">
+										{project.brief_description || 'No description provided for this project.'}
+									</p>
+								{/if}
 							</div>
 
 							<Separator />
@@ -138,19 +386,19 @@
 								<div class="grid grid-cols-2 gap-4 md:grid-cols-4">
 									<div class="bg-muted rounded-lg p-4 text-center">
 										<div class="text-2xl font-bold">15</div>
-										<div class="text-muted-foreground text-sm">Files</div>
+										<div class="text-muted-foreground text-sm">Team Size</div>
 									</div>
 									<div class="bg-muted rounded-lg p-4 text-center">
 										<div class="text-2xl font-bold">3</div>
 										<div class="text-muted-foreground text-sm">Contributors</div>
 									</div>
 									<div class="bg-muted rounded-lg p-4 text-center">
-										<div class="text-2xl font-bold">42</div>
-										<div class="text-muted-foreground text-sm">Commits</div>
+										<div class="text-2xl font-bold">$42.000</div>
+										<div class="text-muted-foreground text-sm">Raised</div>
 									</div>
 									<div class="bg-muted rounded-lg p-4 text-center">
-										<div class="text-2xl font-bold">7</div>
-										<div class="text-muted-foreground text-sm">Branches</div>
+										<div class="text-2xl font-bold">2025</div>
+										<div class="text-muted-foreground text-sm">Founded</div>
 									</div>
 								</div>
 							</div>
@@ -158,38 +406,49 @@
 					</Card.Content>
 				</Card.Root>
 
-				<!-- Project Files/Content -->
+				<!-- Project Markdown Description -->
 				<Card.Root>
 					<Card.Header>
 						<Card.Title class="flex items-center gap-2">
 							<FileText class="h-5 w-5" />
-							Project Files
+							Detailed Information
 						</Card.Title>
 					</Card.Header>
 					<Card.Content>
-						<div class="space-y-2">
-							<div
-								class="bg-muted hover:bg-muted/80 flex cursor-pointer items-center gap-3 rounded-lg p-3 transition-colors"
+						{#if isEditing}
+							<RainbowButton
+								onclick={() => $enhanceDescriptionMutation.mutate(editDescription)}
+								disabled={$enhanceDescriptionMutation.isPending || !editDescription}
+								class="mb-4 h-8"
 							>
-								<Code class="text-muted-foreground h-4 w-4" />
-								<span class="font-medium">src/</span>
-								<span class="text-muted-foreground ml-auto text-sm">Source code</span>
-							</div>
-							<div
-								class="bg-muted hover:bg-muted/80 flex cursor-pointer items-center gap-3 rounded-lg p-3 transition-colors"
-							>
-								<FileText class="text-muted-foreground h-4 w-4" />
-								<span class="font-medium">README.md</span>
-								<span class="text-muted-foreground ml-auto text-sm">Project documentation</span>
-							</div>
-							<div
-								class="bg-muted hover:bg-muted/80 flex cursor-pointer items-center gap-3 rounded-lg p-3 transition-colors"
-							>
-								<Code class="text-muted-foreground h-4 w-4" />
-								<span class="font-medium">package.json</span>
-								<span class="text-muted-foreground ml-auto text-sm">Dependencies</span>
-							</div>
-						</div>
+								{#if $enhanceDescriptionMutation.isPending}
+									<LoaderCircle class="animate-spin" />
+									Generating...
+								{:else}
+									<WandSparkles class="size-4" />
+									Enhance Description
+								{/if}
+							</RainbowButton>
+							<Tabs.Root value="edit" class="w-full">
+								<Tabs.List>
+									<Tabs.Trigger value="edit">Edit</Tabs.Trigger>
+									<Tabs.Trigger value="preview">Preview</Tabs.Trigger>
+								</Tabs.List>
+								<Tabs.Content value="edit">
+									<Textarea
+										bind:value={editDescription}
+										placeholder="Enter detailed project description"
+										class="h-64"
+										disabled={$enhanceDescriptionMutation.isPending}
+									/>
+								</Tabs.Content>
+								<Tabs.Content value="preview">
+									<Markdown content={editDescription} />
+								</Tabs.Content>
+							</Tabs.Root>
+						{:else}
+							<Markdown content={project.description ?? 'No information provided'} />
+						{/if}
 					</Card.Content>
 				</Card.Root>
 			</div>
@@ -199,21 +458,107 @@
 				<!-- Quick Actions -->
 				<Card.Root>
 					<Card.Header>
-						<Card.Title class="text-sm">Quick Actions</Card.Title>
+						<Card.Title class="text-sm">Social Links</Card.Title>
 					</Card.Header>
 					<Card.Content class="space-y-2">
-						<Button variant="outline" size="sm" class="w-full justify-start">
-							<GitBranch class="mr-2 h-4 w-4" />
-							Create Branch
+						<Button
+							variant="outline"
+							size="sm"
+							class="w-full justify-start"
+							href="https://google.com"
+							target="_blank"
+						>
+							<Globe class="mr-2 h-4 w-4" />
+							Website
 						</Button>
-						<Button variant="outline" size="sm" class="w-full justify-start">
-							<Code class="mr-2 h-4 w-4" />
-							Clone Repository
+						<Button
+							variant="outline"
+							size="sm"
+							class="w-full justify-start"
+							href="https://t.me"
+							target="_blank"
+						>
+							<Send class="mr-2 h-4 w-4" />
+							Telegram
 						</Button>
-						<Button variant="outline" size="sm" class="w-full justify-start">
-							<FileText class="mr-2 h-4 w-4" />
-							Download ZIP
+						<Button
+							variant="outline"
+							size="sm"
+							class="w-full justify-start"
+							href="https://github.com"
+							target="_blank"
+						>
+							<Github class="mr-2 h-4 w-4" />
+							GitHub
 						</Button>
+					</Card.Content>
+				</Card.Root>
+				<!-- Contributors -->
+				<Card.Root>
+					<Card.Header>
+						<Card.Title class="text-sm">Contributors</Card.Title>
+					</Card.Header>
+					<Card.Content class="space-y-3">
+						<div class="flex items-center gap-3">
+							{#if !$projectOwnerQuery.data}
+								<Skeleton class="h-8 w-24" />
+							{:else}
+								<div
+									class="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
+								>
+									{$projectOwnerQuery.data.username.slice(0, 1).toUpperCase()}
+								</div>
+								<div class="min-w-0 flex-1">
+									<div class="text-sm font-medium">{$projectOwnerQuery.data.username}</div>
+									<div class="text-muted-foreground text-xs">Owner</div>
+								</div>
+							{/if}
+						</div>
+						<div class="flex items-center gap-3">
+							<div
+								class="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
+							>
+								C
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="text-sm font-medium">Jane Smith</div>
+								<div class="text-muted-foreground text-xs">Co-Founder</div>
+							</div>
+						</div>
+						<div class="flex items-center gap-3">
+							<div
+								class="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
+							>
+								D
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="text-sm font-medium">David Johnson</div>
+								<div class="text-muted-foreground text-xs">Developer</div>
+							</div>
+						</div>
+						<Card.Footer class="pt-2">
+							{#if project.ceo_id === data.user?.id}
+								<Button
+									variant="default"
+									size="sm"
+									class="w-full justify-center"
+									onclick={() => (showContributorsDialog = true)}
+								>
+									<Users class="mr-2 h-4 w-4" />
+									Manage Applications
+								</Button>
+							{:else}
+								<Button
+									variant="default"
+									size="sm"
+									class="w-full justify-center"
+									onclick={() => $applyToProjectMutation.mutate(project.id)}
+								>
+									<MailPlus />
+									Apply to Contribute
+								</Button>
+							{/if}
+						</Card.Footer>
 					</Card.Content>
 				</Card.Root>
 
@@ -224,12 +569,12 @@
 					</Card.Header>
 					<Card.Content class="space-y-3">
 						<div class="text-sm">
-							<div class="font-medium">Initial commit</div>
-							<div class="text-muted-foreground text-xs">2 hours ago</div>
+							<div class="font-medium">Description updated</div>
+							<div class="text-muted-foreground text-xs">1 hours ago</div>
 						</div>
 						<div class="text-sm">
-							<div class="font-medium">Added README</div>
-							<div class="text-muted-foreground text-xs">1 day ago</div>
+							<div class="font-medium">New contributor applied</div>
+							<div class="text-muted-foreground text-xs">2 day ago</div>
 						</div>
 						<div class="text-sm">
 							<div class="font-medium">Project created</div>
@@ -237,27 +582,12 @@
 						</div>
 					</Card.Content>
 				</Card.Root>
-
-				<!-- Contributors -->
-				<Card.Root>
-					<Card.Header>
-						<Card.Title class="text-sm">Contributors</Card.Title>
-					</Card.Header>
-					<Card.Content class="space-y-3">
-						<div class="flex items-center gap-3">
-							<div
-								class="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
-							>
-								U
-							</div>
-							<div class="min-w-0 flex-1">
-								<div class="text-sm font-medium">Project Owner</div>
-								<div class="text-muted-foreground text-xs">Owner</div>
-							</div>
-						</div>
-					</Card.Content>
-				</Card.Root>
 			</div>
 		</div>
+
+		<!-- Contributors Dialog -->
+		{#if showContributorsDialog}
+			<ProjectContributors {projectId} bind:open={showContributorsDialog} />
+		{/if}
 	{/if}
 </div>

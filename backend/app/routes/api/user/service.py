@@ -1,7 +1,6 @@
 from typing import Annotated
 from fastapi import Depends, HTTPException
 
-from models.users import UserRole
 from routes.api.user.data_access import UserDataAccessDep, UserDataAccess
 from routes.api.user.schemas import SetUserRoleSchema
 from schemas.user import User
@@ -27,6 +26,15 @@ class UserService:
         return {
             "message": f"User '{user.username}' role set to {user_role.role.value}."
         }
+
+    async def get_user_by_id(self, user_id: int, current_user: User) -> User:
+        user = await self.user_repository.get_user_by_id(user_id)
+        if user is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"User with ID {user_id} not found.",
+            )
+        return user
 
 
 UserServiceDep = Annotated[UserService, Depends(UserService)]

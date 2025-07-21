@@ -46,7 +46,8 @@
 		}
 	];
 
-	let { open = $bindable(false) }: { open: boolean } = $props();
+	let { open = $bindable(false), dismissable = false }: { open: boolean; dismissable?: boolean } =
+		$props();
 	let selectedRole: UserRole | null = $state(null);
 
 	const setRoleMutation = createMutation({
@@ -63,7 +64,7 @@
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Content class="sm:max-w-md" interactOutsideBehavior="ignore">
+	<Dialog.Content class="sm:max-w-md" interactOutsideBehavior={dismissable ? 'close' : 'ignore'}>
 		<Dialog.Header class="text-center">
 			<Dialog.Title class="text-2xl font-semibold">Choose Your Role</Dialog.Title>
 			<Dialog.Description class="text-muted-foreground">

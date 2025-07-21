@@ -3,6 +3,7 @@ from routes.api.tag.service import TagServiceDep
 from schemas.agent_response import GeneratedTagsResponse
 from dependencies.auth import AuthUserDep
 from routes.api.tag.schemas import TagSchema
+from schemas.generic import GenericResponse
 
 router = APIRouter(prefix="/tags", tags=["tags"])
 
@@ -19,3 +20,10 @@ async def add_project_tags(
     project_id: int, service: TagServiceDep, user: AuthUserDep, tags: list[TagSchema]
 ) -> list[TagSchema]:
     return await service.add_project_tags(project_id, tags, user)
+
+
+@router.delete("/remove/{project_id}")
+async def remove_project_tags(
+    project_id: int, service: TagServiceDep, user: AuthUserDep, tags: list[TagSchema]
+) -> GenericResponse:
+    return await service.remove_project_tags(project_id, tags, user)

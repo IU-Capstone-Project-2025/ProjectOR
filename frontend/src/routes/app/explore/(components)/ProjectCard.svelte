@@ -3,14 +3,14 @@
 	import { Button } from '$lib/components/ui/button';
 	import { type components } from '@/api/v1';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Eye, Lock, Globe, Calendar, User } from '@lucide/svelte';
+	import { Eye, Globe, Calendar, OctagonX, Code } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
 
 	const {
 		project,
 		viewMode = 'grid'
 	}: {
-		project: components['schemas']['ProjectSchema'] & { id: number };
+		project: components['schemas']['ProjectSchema'];
 		viewMode?: 'grid' | 'list';
 	} = $props();
 
@@ -40,36 +40,51 @@
 				>
 					{project.title}
 				</Card.Title>
-				<Badge variant={project.is_public ? 'secondary' : 'outline'} class="ml-2 shrink-0">
-					{#if project.is_public}
-						<Globe class="mr-1 h-3 w-3" />
-						Public
-					{:else}
-						<Lock class="mr-1 h-3 w-3" />
-						Private
+				<div class="flex flex-row gap-2">
+					<Badge variant={project.is_dead ? 'secondary' : 'outline'} class="ml-2 shrink-0">
+						{#if project.is_dead}
+							<OctagonX />
+							Graveyard
+						{:else}
+							<Globe class="mr-1 h-3 w-3" />
+							Public
+						{/if}
+					</Badge>
+					{#if project.is_opensource}
+						<Badge variant="outline" class="shrink-0">
+							<Code class="mr-1 h-3 w-3" />
+							Open Source
+						</Badge>
 					{/if}
-				</Badge>
+				</div>
 			</div>
 		</Card.Header>
 
 		<Card.Content class="space-y-4">
 			<p class="text-muted-foreground line-clamp-3 min-h-[3rem] text-sm">
-				{project.description || 'No description available.'}
+				{project.brief_description || 'No description available.'}
 			</p>
 
 			<div class="text-muted-foreground flex items-center justify-between text-xs">
-				<div class="flex items-center gap-1">
-					<User class="h-3 w-3" />
-					<span>Project Owner</span>
-				</div>
+				<!--				<div class="flex items-center gap-1">-->
+				<!--					<User class="h-3 w-3" />-->
+				<!--					<span>Project Owner</span>-->
+				<!--				</div>-->
 				<div class="flex items-center gap-1">
 					<Calendar class="h-3 w-3" />
-					<span>{formatDate()}</span>
+					<span>{formatDate(project.created_at)}</span>
 				</div>
+			</div>
+			<div class="no-scrollbar flex w-full flex-row gap-2 overflow-x-auto">
+				{#each project.tags ?? [] as tag (tag.name)}
+					<Badge variant="default" class="shrink-0">
+						{tag.name}
+					</Badge>
+				{/each}
 			</div>
 		</Card.Content>
 
-		<Card.Footer class="pt-4">
+		<Card.Footer>
 			<Button
 				variant="default"
 				size="sm"
@@ -90,35 +105,50 @@
 		class="group cursor-pointer transition-all duration-200 hover:shadow-md"
 		onclick={handleViewProject}
 	>
-		<Card.Content class="p-6">
+		<Card.Content>
 			<div class="flex items-center justify-between">
 				<div class="min-w-0 flex-1">
 					<div class="mb-2 flex items-center gap-3">
 						<h3 class="group-hover:text-primary truncate text-lg font-semibold transition-colors">
 							{project.title}
 						</h3>
-						<Badge variant={project.is_public ? 'secondary' : 'outline'}>
-							{#if project.is_public}
-								<Globe class="mr-1 h-3 w-3" />
-								Public
-							{:else}
-								<Lock class="mr-1 h-3 w-3" />
-								Private
+						<div class="flex flex-row gap-2">
+							<Badge variant={project.is_dead ? 'secondary' : 'outline'} class="ml-2 shrink-0">
+								{#if project.is_dead}
+									<OctagonX />
+									Graveyard
+								{:else}
+									<Globe class="mr-1 h-3 w-3" />
+									Public
+								{/if}
+							</Badge>
+							{#if project.is_opensource}
+								<Badge variant="outline" class="shrink-0">
+									<Code class="mr-1 h-3 w-3" />
+									Open Source
+								</Badge>
 							{/if}
-						</Badge>
+						</div>
 					</div>
 					<p class="text-muted-foreground mb-3 line-clamp-2 text-sm">
-						{project.description || 'No description available.'}
+						{project.brief_description || 'No description available.'}
 					</p>
 					<div class="text-muted-foreground flex items-center gap-4 text-xs">
-						<div class="flex items-center gap-1">
-							<User class="h-3 w-3" />
-							<span>Project Owner</span>
-						</div>
+						<!--						<div class="flex items-center gap-1">-->
+						<!--							<User class="h-3 w-3" />-->
+						<!--							<span>Project Owner</span>-->
+						<!--						</div>-->
 						<div class="flex items-center gap-1">
 							<Calendar class="h-3 w-3" />
-							<span>{formatDate()}</span>
+							<span>{formatDate(project.created_at)}</span>
 						</div>
+					</div>
+					<div class="no-scrollbar flex w-full flex-row gap-2 overflow-x-auto pt-2">
+						{#each project.tags ?? [] as tag (tag.name)}
+							<Badge variant="default" class="shrink-0">
+								{tag.name}
+							</Badge>
+						{/each}
 					</div>
 				</div>
 				<div class="ml-4 flex items-center gap-2">

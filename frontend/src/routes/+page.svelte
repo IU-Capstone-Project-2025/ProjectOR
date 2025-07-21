@@ -2,7 +2,6 @@
 	import { Button } from '@/components/ui/button';
 	import * as Card from '@/components/ui/card';
 	import { Badge } from '@/components/ui/badge';
-	import placeholder from '@/assets/placeholder.svg';
 	import {
 		Lightbulb,
 		Code,
@@ -18,6 +17,8 @@
 		Github
 	} from '@lucide/svelte';
 	import GlobeCard from '@/components/landing/GlobeCard.svelte';
+	import Orbit from '@/components/landing/Orbit.svelte';
+	import Reviews from '@/components/landing/Reviews.svelte';
 </script>
 
 <div class="flex min-h-screen flex-col">
@@ -84,13 +85,6 @@
 					</div>
 					<div class="flex items-center justify-center">
 						<div class="relative">
-							<!--							<img-->
-							<!--								src={placeholder}-->
-							<!--								width="600"-->
-							<!--								height="400"-->
-							<!--								alt="Platform Dashboard"-->
-							<!--								class="aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"-->
-							<!--							/>-->
 							<GlobeCard />
 							<div
 								class="from-background/20 absolute inset-0 rounded-xl bg-gradient-to-t to-transparent"
@@ -207,7 +201,7 @@
 				<div class="flex flex-col items-center justify-center space-y-4 text-center">
 					<div class="space-y-2">
 						<Badge variant="secondary">For Everyone</Badge>
-						<h2 class="text-3xl font-bold tracking-tighter sm:text-5xl">
+						<h2 class="text-3xl font-bold tracking-tight sm:text-5xl">
 							Built for every role in the startup ecosystem
 						</h2>
 					</div>
@@ -264,13 +258,7 @@
 						</Card.Root>
 					</div>
 					<div class="flex items-center justify-center">
-						<img
-							src={placeholder}
-							width="500"
-							height="400"
-							alt="Team Collaboration"
-							class="aspect-square overflow-hidden rounded-xl object-cover"
-						/>
+						<Orbit />
 					</div>
 				</div>
 			</div>
@@ -313,16 +301,12 @@
 								</div>
 							</div>
 						</div>
-						<Button variant="outline" class="w-fit bg-transparent">Explore Graveyard</Button>
+						<Button variant="outline" class="w-fit bg-transparent" href="/app"
+							>Explore Graveyard</Button
+						>
 					</div>
 					<div class="flex items-center justify-center">
-						<img
-							src={placeholder}
-							width="600"
-							height="400"
-							alt="Startup Graveyard Analytics"
-							class="aspect-video overflow-hidden rounded-xl object-cover shadow-lg"
-						/>
+						<Reviews />
 					</div>
 				</div>
 			</div>
