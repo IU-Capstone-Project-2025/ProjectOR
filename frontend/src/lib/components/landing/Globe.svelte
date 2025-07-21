@@ -61,7 +61,18 @@
 				{ location: [19.4326, -99.1332], size: 0.04 },
 				{ location: [40.7128, -74.006], size: 0.1 },
 				{ location: [34.6937, 135.5022], size: 0.05 },
-				{ location: [41.0082, 28.9784], size: 0.06 }
+				{ location: [41.0082, 28.9784], size: 0.06 },
+				{ location: [51.5074, -0.1278], size: 0.1 },
+				{ location: [55.7558, 37.6173], size: 0.05 },
+				{ location: [48.8566, 2.3522], size: 0.08 },
+				{ location: [52.52, 13.405], size: 0.07 },
+				{ location: [35.6762, 139.6503], size: 0.1 },
+				{ location: [37.7749, -122.4194], size: 0.1 },
+				{ location: [55.6761, 12.5683], size: 0.05 },
+				{ location: [59.9139, 10.7522], size: 0.05 },
+				{ location: [60.1695, 24.9354], size: 0.05 },
+				{ location: [64.1355, -21.8954], size: 0.05 },
+				{ location: [55.7513, 48.732], size: 0.5 }
 			],
 			onRender: onRender
 		});
