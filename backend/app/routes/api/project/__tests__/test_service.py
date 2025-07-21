@@ -11,10 +11,14 @@ def mock_data_access():
     data_access = AsyncMock()
     return data_access
 
+@pytest.fixture
+def mock_ai_agent():
+    ai_agent = AsyncMock()
+    return ai_agent
 
 @pytest.fixture
-def project_service(mock_data_access):
-    return ProjectService(data_access=mock_data_access)
+def project_service(mock_data_access, mock_ai_agent):
+    return ProjectService(data_access=mock_data_access, ai_agent=mock_ai_agent)
 
 
 @pytest.fixture
